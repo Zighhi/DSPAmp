@@ -1,0 +1,18 @@
+# KiCad
+*.kicad_sch-bak
+*.kicad_pcb-bak
+*-backups/
+_autosave-*
+*.lck
+
+# LTSpice
+*.log
+*.raw
+*.op.raw
+
+# System / OS
+.DS_Store
+Thumbs.db
+
+# Documentation
+*.pdf
