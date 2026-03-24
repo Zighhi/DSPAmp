@@ -1,39 +1,53 @@
-﻿Reference,Qty,Value,DNP,Exclude from BOM,Exclude from Board,Footprint,Datasheet,Already Have
-"C1,C3,C44",3,100uF,,,,,~,
-"C2,C5,C6,C9,C13,C14,C15,C22,C23",9,10uF,,,,,~,
-"C4,C21,C29,C34,C39,C40",6,0.1uF,,,,,~,
-"C7,C8,C10,C16,C17,C18,C25,C30,C35,C41",10,100pF,,,,,~,
-"C11,C12,C19,C20",4,27pF,,,,,~,
-"C24,C26,C27,C28,C31,C32,C33,C36,C37,C38,C42,C43",12,47uF,,,,,~,
-D1,1,LED,,,,,~,X
-J1,1,Barrel_Jack,,,,,~,X
-"J2,J4,J16,J17,J18,J19",6,NCJ6FI-V,,,,Connector_Audio:Jack_XLR-6.35mm_Neutrik_NCJ6FI-V_Vertical,https://www.neutrik.com/en/product/ncj6fi-v,X
-J3,1,NRJ6HM-1,,,,Connector_Audio:Jack_6.35mm_Neutrik_NRJ6HM-1_Horizontal,https://www.neutrik.com/en/product/nrj6hm-1,X
-J5,1,SPK1+,,,,,~,X
-J6,1,SPK1-,,,,,~,X
-J7,1,SPK2+,,,,,~,X
-J8,1,SPK2-,,,,,~,X
-J9,1,SPK3+,,,,,~,X
-J10,1,SPK3-,,,,,~,X
-J11,1,SPK4+,,,,,~,X
-J12,1,SPK4-,,,,,~,X
-"J20,J21",2,Conn_02x10_Odd_Even,,,,,~,X
-"Q1,Q2",2,2N7000,,,,Package_TO_SOT_THT:TO-92_Inline,https://www.vishay.com/docs/70226/70226.pdf,
-"R1,R2,R3,R4,R9,R17,R20,R21,R31,R32",10,100k,,,,,~,
-"R5,R6,R10,R18,R22,R23",6,100,,,,,~,
-"R7,R8,R24,R25,R62,R63,R64",7,10k,,,,,~,
-"R11,R19",2,2k,,,,,~,
-"R12,R26",2,8.2k,,,,,~,
-"R13,R15,R27,R29",4,6.2k,,,,,~,
-"R14,R28",2,390,,,,,~,
-"R16,R30",2,2.2k,,,,,~,
-"R33,R36,R38,R40,R43,R44,R47,R50,R51,R54,R57,R58",12,22k,,,,,~,
-"R34,R35,R41,R42,R48,R49,R55,R56",8,1k,,,,,~,
-"R37,R39,R45,R46,R52,R53,R59,R60",8,68,,,,,~,
-R61,1,470,,,,,~,
-SW1,1,SW_DPDT_x2,,,,,~,
-U1,1,TL072,,,,,http://www.ti.com/lit/ds/symlink/tl071.pdf,X
-U2,1,~,,,,,,X
-"U3,U9,U10,U11,U12",1,OPA2134,,,,Package_DIP:DIP-8_W7.62mm,http://www.ti.com/lit/ds/symlink/opa134.pdf,Have 3x
-U4,1,ADAU1701 DSP,,,,,,X
-"U5,U6,U7,U8",4,Class D Amp,,,,,,X
+Reference,Qty,Value,Mouser Part Number,Already Have,Link
+"C1,C3,C44",3,100uF,"647-UPJ1H101MPD6TD
+                            ",Y,https://ro.mouser.com/ProductDetail/Nichicon/UPJ1H101MPD6TD?qs=7sdcGt%252B0qfUafHbnzL7%2F4w%3D%3D
+"C2,C5,C6,C9,C13,C14,C15,C22,C23",9,10uF,647-UBT1H100MPD8,Y,https://www.mouser.com/ProductDetail/Nichicon/UBT1H100MPD8?qs=9yI11AV48ZTJ4D6QrfWhRQ%3D%3D
+"C4,C21,C29,C34,C39,C40",6,0.1uF,"505-MKS2C031001A00KF
+                            ",Y,https://ro.mouser.com/ProductDetail/WIMA/MKS2C031001A00KF00?qs=sJjjjplDs9u5RDeAYd0rNw%3D%3D
+"C7,C8,C10,C16,C17,C18,C25,C30,C35,C41",10,100pF,"594-K101J15C0GF53L2
+                            ",Y,https://ro.mouser.com/ProductDetail/Vishay-BC-Components/K101J15C0GF53L2?qs=sYfpZ29HcUTpR0ow7PuS1g%3D%3D
+"C11,C12,C19,C20",4,27pF,"594-K270J15C0GF5TK2            ",Y,https://ro.mouser.com/ProductDetail/Vishay-BC-Components/K270J15C0GF5TK2?qs=sGAEpiMZZMsh%252B1woXyUXj%252By1qj0MYuBIkcbWDGmM%252BVc%3D
+"C24,C26,C27,C28,C31,C32,C33,C36,C37,C38,C42,C43",12,47uF,"647-UKA1E470MDD
+                            ",Y,https://ro.mouser.com/ProductDetail/Nichicon/UKA1E470MDD?qs=TI%2F9gtmDCEHl6Eqphf1%252B7g%3D%3D
+D1,1,LED,,X,
+J1,1,Barrel_Jack,,X,
+"J2,J4,J16,J17,J18,J19",6,NCJ6FI-V,,X,
+J3,1,NRJ6HM-1,,X,
+J5,1,SPK1+,,X,
+J6,1,SPK1-,,X,
+J7,1,SPK2+,,X,
+J8,1,SPK2-,,X,
+J9,1,SPK3+,,X,
+J10,1,SPK3-,,X,
+J11,1,SPK4+,,X,
+J12,1,SPK4-,,X,
+"J20,J21",2,Conn_02x10_Odd_Even,,X,
+"Q1,Q2",2,2N7000,512-2N7000,Y,https://ro.mouser.com/ProductDetail/onsemi/2N7000?qs=FOlmdCx%252BAA2o%2FKZOTk%2F3hg%3D%3D
+"R1,R2,R3,R4,R9,R17,R20,R21,R31,R32",10,100k,71-CMF55100K00FHEA,Y,https://ro.mouser.com/ProductDetail/Vishay-Dale/CMF55100K00FHEA?qs=hUSDL001LRQWsfQREF4feg%3D%3D
+"R5,R6,R10,R18,R22,R23",6,100,71-CMF55100R00FHEA,Y,https://ro.mouser.com/ProductDetail/Vishay-Dale/CMF55100R00FHEA?qs=hUSDL001LRQ70YfNVSkeoQ%3D%3D
+"R7,R8,R24,R25,R62,R63,R64",7,10k,71-CMF5510K000FHEA,Y,https://ro.mouser.com/ProductDetail/Vishay-Dale/CMF5510K000FHEA?qs=hUSDL001LRTbf68QgxbkwQ%3D%3D
+"R11,R19",2,2k,"594-MRS25000C2001FCT
+                            ",Y,https://ro.mouser.com/ProductDetail/Vishay-BC-Components/MRS25000C2001FCT00?qs=ClR5yMXwuUeNGDXOleRTFA%3D%3D
+"R12,R26",2,8.2k,594-MRS25000C8201FCT,Y,https://ro.mouser.com/ProductDetail/Vishay-BC-Components/MRS25000C8201FCT00?qs=sONv2tudcUgVBwbse14biQ%3D%3D
+"R13,R15,R27,R29",4,6.2k,"594-MRS25000C6201FCT
+                            ",Y,https://ro.mouser.com/ProductDetail/Vishay-BC-Components/MRS25000C6201FCT00?qs=sONv2tudcUhZL0d75OGA8w%3D%3D
+"R14,R28",2,390,594-MRS25000C3900FCT,Y,https://ro.mouser.com/ProductDetail/Vishay-BC-Components/MRS25000C3900FCT00?qs=VfXS90KdVcb%252B9gdfsUl4lA%3D%3D
+"R16,R30",2,2.2k,"594-MRS25000C2201FCT
+                            ",Y,https://ro.mouser.com/ProductDetail/Vishay-BC-Components/MRS25000C2201FCT00?qs=3buz8ytw9h010ABAhCgi8w%3D%3D
+"R33,R36,R38,R40,R43,R44,R47,R50,R51,R54,R57,R58",12,22k,"72-CMF5522K000FHEB
+                            ",Y,https://ro.mouser.com/ProductDetail/Vishay-Dale/CMF5522K000FHEB?qs=6cO4xucbWrruxo1anp4D%252Bw%3D%3D
+"R34,R35,R41,R42,R48,R49,R55,R56",8,1k,"71-CMF551K0000FHEA      ",Y,https://ro.mouser.com/ProductDetail/Vishay-Dale/CMF551K0000FHEA?qs=hUSDL001LRRAprNDRG2Xsg%3D%3D
+"R37,R39,R45,R46,R52,R53,R59,R60",8,68,"594-MRS25000C6809FCT
+                            ",Y,https://ro.mouser.com/ProductDetail/Vishay-BC-Components/MRS25000C6809FCT00?qs=XEoMKtWPeKO4ZbB93NFqiA%3D%3D
+R61,1,470,"594-MRS25000C4700FCT
+                            ",X,
+SW1,1,SW_DPDT_x2,688-SPPH110800,Y,https://ro.mouser.com/ProductDetail/Alps-Alpine/SPPH110800?qs=fMKjfF2mFoip7G8ECXWaAQ%3D%3D
+U1,1,TL072,,X,
+U2,1,LM2596 Module,,X,
+"U3,U9,U10,U11,U12",5,OPA2134,"595-OPA2134PA
+                            ",Have 3x,https://ro.mouser.com/ProductDetail/Texas-Instruments/OPA2134PA?qs=7nS3%252BbEUL6uyT34OzaiM4g%3D%3D
+U4,1,ADAU1701 DSP,,X,
+"U5,U6,U7,U8",4,Class D Amp,,X,
+"Socket1,Socket2,Socket3,Socket4,Socket5,Socket6",6,DIP-8 Socket,"575-11043308
+                            ",Y,https://ro.mouser.com/ProductDetail/Mill-Max/110-43-308-41-001000?qs=IGgAdOvCTsTu%2FqaUr8NArg%3D%3D
+,,,,,
