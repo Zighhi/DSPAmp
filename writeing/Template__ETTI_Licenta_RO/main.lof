@@ -5,4 +5,6 @@
 \contentsline {figure}{\numberline {1.4}{\ignorespaces Schema teoretică a unui amplificator diferențial}}{6}{figure.1.4}%
 \contentsline {figure}{\numberline {1.5}{\ignorespaces Degradarea teoretică a parametrului CMRR în funcție de toleranța componentelor pasive}}{7}{figure.1.5}%
 \contentsline {figure}{\numberline {1.6}{\ignorespaces Procesul de eșantionare și cuantizare}}{8}{figure.1.6}%
-\contentsline {figure}{\numberline {2.1}{\ignorespaces Schema electronică a amplificatorului}}{11}{figure.2.1}%
+\contentsline {figure}{\numberline {2.1}{\ignorespaces Diagrama bloc funcțională a sistemului.}}{10}{figure.2.1}%
+\contentsline {figure}{\numberline {2.2}{\ignorespaces Schema electronică a interfeței de intrare hibride.}}{11}{figure.2.2}%
+\contentsline {figure}{\numberline {2.3}{\ignorespaces Analiza performanțelor interfeței de intrare prin simulare numerică.}}{12}{figure.2.3}%

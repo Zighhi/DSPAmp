@@ -1,36 +1,166 @@
 \chapter{Proiectarea Arhitecturii Hardware \label{hardware_design}}
 
-În acest capitol este detaliată proiectarea modulelor componente ale amplificatorului audio multicanal, pornind de la condiționarea semnalelor de intrare și terminând cu etajele de putere și sistemul de management al alimentării. Arhitectura generală a sistemului a fost concepută pentru a asigura un raport semnal-zgomot optim și o versatilitate ridicată în utilizare.
+\begin{figure}[htbp]
+    \centering
+    \resizebox{0.95\textwidth}{!}{%
+    \begin{tikzpicture}[
+        >=stealth, thick,
+        box/.style={draw=black!70, fill=blue!5, rectangle, rounded corners=2pt, minimum height=0.6cm, text width=2.4cm, align=center, font=\scriptsize\sffamily},
+        cots/.style={draw=black!70, fill=orange!10, rectangle, rounded corners=6pt, minimum height=0.6cm, text width=2.4cm, align=center, font=\scriptsize\sffamily},
+        pwr/.style={draw=black!70, fill=red!15, rectangle, rounded corners=3pt, minimum height=0.8cm, text width=4cm, align=center, font=\scriptsize\sffamily},
+        io/.style={font=\scriptsize\sffamily\bfseries, align=center}
+    ]
 
-\section{Interfața de intrare și preamplificarea}
-Pentru a asigura o compatibilitate maximă cu standardele audio profesionale și de larg consum, interfața de intrare a fost proiectată pentru a accepta atât semnale echilibrate (balansate), cât și neechilibrate, conform principiilor de adaptare în tensiune.
+    % --- Core DSP ---
+    \node[cots, minimum height=8.5cm, text width=2cm] (dsp) at (0, 0) {Procesor\\Digital de\\Semnal\\(DSP)};
+    
+    % --- Programator ---
+    \node[cots, above=1cm of dsp] (prog) {Programator DSP};
+    \node[io, left=0.8cm of prog] (conn_usb) {Port USB};
+    \draw[->] (conn_usb) -- (prog);
+    \draw[<->] (prog) -- (dsp) node[midway, right, font=\scriptsize] {I2C};
 
-\subsection{Etajul de intrare balansat și nebalansat}
-Sistemul utilizează amplificatoare operaționale de înaltă performanță \textbf{OPA2134} \cite{opa2134}, selectate pentru distorsiunile armonice extrem de scăzute ($0.00008\%$). 
-\begin{itemize}
-    \item \textbf{Intrarea Balansată:} Utilizează o configurație de amplificator diferențial cu rezistențe de precizie de $10\text{ k}\Omega$ (R7, R8, R24, R25). Pentru a atinge un CMRR de peste $60\text{ dB}$, s-au utilizat componente cu o toleranță de $0.1\%$. Protecția împotriva interferențelor de radiofrecvență este asigurată de filtre trece-jos RC ($100\text{ }\Omega / 100\text{ pF}$) plasate la intrare.
-    \item \textbf{Intrarea Nebalansată:} Utilizează un buffer cu impedanță ridicată, asigurând izolarea sursei de etajele ulterioare de procesare.
-\end{itemize}
+    % --- Inputs ---
+    \node[box] (in_bal1) at (-4, 2.5) {Interfață\\Echilibrată};
+    \node[box] (in_bal2) at (-4, 0.0) {Interfață\\Echilibrată};
+    \node[box] (in_unbal) at (-4, -2.5) {Interfață\\Neechilibrată};
 
-\subsection{Selectarea câștigului (+4 dBu / -10 dBV)}
-Adaptarea nivelurilor de semnal este realizată printr-un etaj de amplificare cu câștig selectabil, comandat de comutatorul \textbf{SW1}. Acesta modifică configurația rețelei de feedback a preamplificatorului, utilizând un set de rezistențe calculate pentru a compensa diferența de nivel dintre standardele profesionale și consumer:
-\begin{itemize}
-    \item Pentru nivelul de $+4\text{ dBu}$ ($1.228\text{ V}_{rms}$), etajul funcționează cu un câștig apropiat de unitate sau o ușoară atenuare.
-    \item Pentru nivelul de $-10\text{ dBV}$ ($0.316\text{ V}_{rms}$), se activează o treaptă de amplificare suplimentară utilizând rezistențe precum R12 ($8.2\text{ k}\Omega$) și R13 ($6.2\text{ k}\Omega$), aducând semnalul la valoarea nominală internă.
-\end{itemize}
+    \node[io] (conn_in_bal1) at (-6.5, 2.5) {XLR / TRS};
+    \node[io] (conn_in_bal2) at (-6.5, 0.0) {XLR / TRS};
+    \node[io] (conn_in_unbal) at (-6.5, -2.5) {Jack 1/4"};
+
+    \draw[->] (conn_in_bal1) -- (in_bal1);
+    \draw[->] (conn_in_bal2) -- (in_bal2);
+    \draw[->] (conn_in_unbal) -- (in_unbal);
+
+    \draw[->] (in_bal1.east) -- (dsp.west |- in_bal1.east);
+    \draw[->] (in_bal2.east) -- (dsp.west |- in_bal2.east);
+    \draw[->] (in_unbal.east) -- (dsp.west |- in_unbal.east);
+
+    % --- Outputs ---
+    \node[box] (out_bal1) at (4, 3.8) {Ieșire\\Echilibrată};
+    \node[box] (out_bal2) at (4, 2.7) {Ieșire\\Echilibrată};
+    \node[box] (out_bal3) at (4, 1.6) {Ieșire\\Echilibrată};
+    \node[box] (out_bal4) at (4, 0.5) {Ieșire\\Echilibrată};
+
+    \node[cots] (out_pwr1) at (4, -0.7) {Amplificator\\Clasa D};
+    \node[cots] (out_pwr2) at (4, -1.8) {Amplificator\\Clasa D};
+    \node[cots] (out_pwr3) at (4, -2.9) {Amplificator\\Clasa D};
+    \node[cots] (out_pwr4) at (4, -4.0) {Amplificator\\Clasa D};
+
+    \foreach \i/\y in {1/3.8, 2/2.7, 3/1.6, 4/0.5} {
+        \node[io] (conn_out_bal\i) at (6.5, \y) {XLR / TRS};
+        \draw[->] (out_bal\i) -- (conn_out_bal\i);
+        \draw[->] (dsp.east |- out_bal\i.west) -- (out_bal\i.west);
+    }
+    \foreach \i/\y in {1/-0.7, 2/-1.8, 3/-2.9, 4/-4.0} {
+        \node[io] (conn_out_pwr\i) at (6.5, \y) {Conectori\\Banană};
+        \draw[->] (out_pwr\i) -- (conn_out_pwr\i);
+        \draw[->] (dsp.east |- out_pwr\i.west) -- (out_pwr\i.west);
+    }
+
+    % --- Power ---
+    \node[pwr] (power) at (0, -6.0) {Convertor DC-DC\\+ Masă virtuală};
+    
+    % 12V IN
+    \node[io] (conn_pwr) at (-4, -6.0) {12V DC IN};
+    \draw[->] (conn_pwr) -- (power.west);
+
+    % --- Power Routing (Bottom Taps & Trimmed Buses) ---
+    % DSP 5V
+    \draw[->, dashed, red!80!black, thick] (power.north) -- (dsp.south) node[midway, right, font=\scriptsize] {5V};
+    
+    % Left Bus - FAR LEFT (X=-8.5)
+    \draw[dashed, red!80!black, thick] (power.north west) ++(0,-0.2) -- (-8.5, -5.8) coordinate (bus_L);
+    \draw[dashed, red!80!black, thick] (bus_L) -- (-8.5, 2.0) node[pos=0.8, right, font=\scriptsize] {12V + VGND};
+    
+    % Left Taps - Enter from bottom (South)
+    \foreach \y in {2.5, 0.0, -2.5} {
+        \draw[->, dashed, red!80!black, thick] (-8.5, \y - 0.6) -- (-4, \y - 0.6) -- (-4, \y - 0.3);
+    }
+
+    % Right Bus - FAR RIGHT (X=8.5)
+    \draw[dashed, red!80!black, thick] (power.north east) ++(0,-0.2) -- (8.5, -5.8) coordinate (bus_R);
+    \draw[dashed, red!80!black, thick] (bus_R) -- (8.5, 3.3);
+    
+    \node[left, text=red!80!black, font=\scriptsize, fill=white, inner sep=1pt] at (8.4, 0.2) {12V + VGND};
+    \node[left, text=red!80!black, font=\scriptsize] at (8.4, -2.0) {12V};
+
+    % Right Taps - Enter from bottom (South)
+    \foreach \y in {3.8, 2.7, 1.6, 0.5} {
+        \draw[->, dashed, red!80!black, thick] (8.5, \y - 0.6) -- (4, \y - 0.6) -- (4, \y - 0.3);
+    }
+    \foreach \y in {-0.7, -1.8, -2.9, -4.0} {
+        \draw[->, dashed, red!80!black, thick] (8.5, \y - 0.6) -- (4, \y - 0.6) -- (4, \y - 0.3);
+    }
+
+    \end{tikzpicture}
+    }
+    \caption{Diagrama bloc funcțională a sistemului.}
+    \label{fig:block_diagram_sys}
+\end{figure}
+
+Acest capitol detaliază arhitectura hardware a amplificatorului audio multicanal, ilustrând metodologia de proiectare, selecția componentelor și integrarea acestora la nivel de sistem. Concret, capitolul va descrie dezvoltarea etajelor electronice proiectate: interfețele audio de linie pentru intrare și ieșire și sistemul de alimentare cu masă virtuală. 
+
+Pentru a eficientiza dezvoltarea, anumite funcții complexe au fost implementate utilizând module pre-asamblate. Astfel, designul a trebuit să acomodeze și să interconecteze corect procesorul digital de semnal, amplificatoarele de putere în clasa D și programatorul hardware al DSP-ului. Designul rezulta este prezentat în Figura \ref{fig:block_diagram_sys}.
+
+\section{Interfața audio de linie: Arhitectura hibridă}
+Implementarea etajului de intrare a urmat o abordare hibridă, vizând integrarea funcționalității pentru semnale echilibrate și neechilibrate într-o structură hardware unificată. Această metodologie de proiectare se bazează pe configurațiile fundamentale descrise de Douglas Self \cite{douglasself}, adaptate cerințelor specifice de nivel și impedanță ale sistemului multicanal.
+
+\subsection{Proiectarea etajului de intrare universal}
+Nucleul interfeței este constituit dintr-un amplificator diferențial realizat cu amplificatorul operațional \textbf{OPA2134}. Alegerea acestei topologii permite utilizarea unei căi de semnal comune pentru ambele tipuri de conexiuni. În cazul unui semnal echilibrat, circuitul procesează diferența dintre ramurile pozitivă și negativă. Pentru semnalele neechilibrate, ramura negativă a conectorului este legată la masă, circuitul funcționând ca un buffer ne-inversor.
+
+Această configurație, deși eficientă din punctul de vedere al numărului de componente, prezintă un dezavantaj teoretic inerent legat de dezechilibrul impedanțelor de intrare. În configurația cu un singur amplificator operațional, impedanța văzută de ramura ne-inversoare este egală cu suma rezistențelor din divizor, în timp ce ramura inversoare prezintă o impedanță mai scăzută, determinată de rezistența de intrare către nodul de masă virtuală. Acest asimetrie poate conduce la o degradare a raportului de rejecție a modului comun (CMRR) în prezența unor surse cu impedanță de ieșire ridicată sau neegală, aspect critic analizat în literatura de specialitate \cite{douglasself}.
+
+\subsection{Filtrarea și condiționarea semnalului}
+Pentru a asigura funcționarea stabilă într-un mediu cu interferențe electromagnetice ridicate, fiecare intrare este prevăzută cu un etaj de filtrare a radiofrecvenței. Acesta este compus dintr-o rețea RC pasivă ($100\text{ }\Omega / 100\text{ pF}$), dimensionată pentru a atenua componentele de înaltă frecvență fără a afecta răspunsul în faza al spectrului audio.
+
+Cuplajul semnalului se realizează prin condensatoare non-polarizate de $47\text{ }\mu\text{F}$, care asigură blocarea tensiunilor de decalaj în curent continuu. Schema electronică detaliată, exportată din mediul de proiectare KiCad, este prezentată în Figura \ref{fig:input_sch}.
+
+\begin{figure}[ht]
+    \centering
+    % Placeholder pentru figura exportată din KiCad
+    \fbox{\begin{minipage}{0.8\textwidth}
+        \centering
+        \vspace{2cm}
+        [Schema Electronică: Interfața de Intrare - KiCad]
+        \vspace{2cm}
+    \end{minipage}}
+    \caption{Schema electronică a interfeței de intrare hibride.}
+    \label{fig:input_sch}
+\end{figure}
+
+\subsection{Managementul nivelului de semnal și câștigul selectabil}
+Adaptarea între standardele de nivel $+4\text{ dBu}$ și $-10\text{ dBV}$ este realizată prin modificarea rețelei de reacție negativă a amplificatorului diferențial. Comutatorul \textbf{SW1} activează o rezistență de șuntare, crescând câștigul etajului cu $11.8\text{ dB}$ pentru semnalele de nivel scăzut. Această procedură garantează că procesorul digital de semnal \textbf{ADAU1701} operează întotdeauna într-o zonă optimă a gamei dinamice, menținând o rezervă de gardă de $6\text{ dB}$ față de pragul de saturație digitală.
+
+Performanța acestui etaj a fost validată prin simulări SPICE, urmărind în special liniaritatea răspunsului în frecvență și eficiența rejecției modului comun, rezultatele fiind ilustrate în Figura \ref{fig:input_sim}.
+
+\begin{figure}[ht]
+    \centering
+    % Placeholder pentru rezultatele simulării
+    \fbox{\begin{minipage}{0.8\textwidth}
+        \centering
+        \vspace{2cm}
+        [Rezultate Simulări: CMRR și Răspuns în Frecvență]
+        \vspace{2cm}
+    \end{minipage}}
+    \caption{Analiza performanțelor interfeței de intrare prin simulare numerică.}
+    \label{fig:input_sim}
+\end{figure}
+
+\subsection{Interfața de ieșire de linie}
+Ieșirile de linie echilibrate sunt proiectate pentru a asigura o transmisie de joasă impedanță, capabilă să conducă sarcini capacitive reprezentate de cabluri lungi. Etajul bufferat minimizează diafonia între canale și previne interacțiunea dintre procesorul de semnal și echipamentele externe conectate.
 
 \section{Procesarea Digitală a Semnalului (DSP)}
 Nucleul sistemului este procesorul \textbf{ADAU1701} \cite{adau1701}, care funcționează la o frecvență de eșantionare de $48\text{ kHz}$, sincronizat de un oscilator cu cristal de $12.288\text{ MHz}$.
 
 \subsection{Condiționarea intrărilor ADC}
-ADC-urile integrate în ADAU1701 necesită un semnal de intrare în curent. Pentru a converti tensiunea analogică în curent, s-au utilizat rezistențe serie de \textbf{$22\text{ k}\Omega$} (R33, R36 etc.). Această valoare, împreună cu condensatoarele de cuplaj de \textbf{$47\text{ }\mu\text{F}$}, stabilește o frecvență de tăiere inferioară de aproximativ $0.15\text{ Hz}$, asigurând un răspuns liniar în toată banda audio. Nivelul de intrare maxim (full-scale) este astfel setat la aproximativ $2\text{ V}_{rms}$, oferind un headroom suficient pentru procesare.
+ADC-urile integrate în ADAU1701 necesită un semnal de intrare în curent. Pentru a converti tensiunea analogică în curent, s-au utilizat rezistențe serie de \textbf{$18\text{ k}\Omega$} (R33, R36 etc.), care împreună cu rezistența internă de $2\text{ k}\Omega$ totalizează $20\text{ k}\Omega$. Această valoare setează nivelul de \textit{full-scale} la $2\text{ V}_{rms}$.
 
-\section{Etajele de ieșire}
-Sistemul dispune de două căi de ieșire independente pentru fiecare canal:
-\begin{itemize}
-    \item \textbf{Ieșiri de linie balansate:} Implementate cu drivere diferențiale, destinate interconectării cu alte echipamente profesionale.
-    \item \textbf{Ieșiri de putere:} Utilizează module de amplificare în clasa D bazate pe circuitul integrat \textbf{TPA3118}. Acestea oferă o eficiență ridicată și sunt configurate pentru a conduce sarcini de $4\text{ }\Omega$ sau $8\text{ }\Omega$ la o tensiune de alimentare de $12\text{ V}$.
-\end{itemize}
+Utilizarea condensatoarelor de cuplaj de \textbf{$47\text{ }\mu\text{F}$} stabilește o frecvență de tăiere inferioară extrem de joasă, asigurând o fază liniară în sub-bas. Nivelul nominal de operare a fost calculat pentru a menține un \textit{headroom} digital de $6\text{ dB}$, prevenind distorsiunile de tip \textit{clipping} în timpul procesării algoritmilor de egalizare sau filtrare.
+
+\section{Etajele de putere în clasa D}
+Pentru amplificarea finală a semnalului către difuzoare, s-au utilizat module de putere bazate pe circuitul integrat \textbf{TPA3118}. Acestea funcționează în modul de modulație prin lățimea pulsurilor (PWM), oferind o eficiență de peste $90\%$, ceea ce elimină necesitatea unor radiatoare voluminoase. Modulele sunt configurate pentru a furniza o putere nominală de $15\text{ W}$ pe canal la o sarcină de $8\text{ }\Omega$, utilizând tensiunea de alimentare de $12\text{ V}$.
 
 \section{Sistemul de alimentare și masa virtuală}
 Alimentarea circuitelor analogice se realizează de la o sursă unipolară de $12\text{ V}$. Pentru a permite operarea amplificatoarelor operaționale în regim dual, s-a implementat un circuit de \textbf{masă virtuală} ($V_{cc}/2 = 6\text{ V}$).

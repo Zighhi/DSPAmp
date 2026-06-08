@@ -52,10 +52,6 @@ U.~Z{\"o}lzer, \emph{{DAFX}: Digital Audio Effects}, 2nd~ed.\hskip 1em plus
 D.~Self, \emph{Audio Power Amplifier Design Handbook}, 4th~ed.\hskip 1em plus
   0.5em minus 0.4em\relax Focal Press/Elsevier, 2006.
 
-\bibitem{opa2134}
-\emph{{OPA2134}: {SoundPlus} High Performance Audio Operational Amplifiers},
-  {Texas Instruments}, 2015, data Sheet, SBOS058A.
-
 \bibitem{adau1701}
 \emph{{ADAU1701}: {SigmaDSP} 28-/56-Bit Audio Processor with Two {ADCs} and
   Four {DACs}}, {Analog Devices, Inc.}, 2016, data Sheet, Rev. C.
