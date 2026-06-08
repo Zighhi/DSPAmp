@@ -1,0 +1,44 @@
+\chapter{Proiectarea Arhitecturii Hardware \label{hardware_design}}
+
+În acest capitol este detaliată proiectarea modulelor componente ale amplificatorului audio multicanal, pornind de la condiționarea semnalelor de intrare și terminând cu etajele de putere și sistemul de management al alimentării. Arhitectura generală a sistemului este prezentată în schema electrică din Figura \ref{fig:schema_electrica}.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.95\textwidth]{figuri/schema_hardware.pdf}
+    \caption{Schema electronică a amplificatorului}
+    \label{fig:schema_electrica}
+\end{figure}
+
+\section{Interfața de intrare și preamplificarea}
+Pentru a asigura o compatibilitate maximă cu standardele audio profesionale și de larg consum, interfața de intrare a fost proiectată pentru a accepta atât semnale echilibrate (balansate), cât și neechilibrate, conform principiilor descrise de Douglas Self \cite{douglasself}.
+
+\subsection{Etajul de intrare balansat și nebalansat}
+Sistemul utilizează amplificatoare operaționale de înaltă performanță \textbf{OPA2134} \cite{opa2134}, recunoscute pentru zgomotul redus și distorsiunile armonice minime. 
+\begin{itemize}
+    \item \textbf{Intrarea Balansată:} Utilizează un amplificator diferențial pentru a elimina zgomotul de mod comun indus pe cablurile lungi. Respingerea de mod comun (CMRR) este optimizată prin utilizarea unor rezistențe cu toleranță de 0.1\%.
+    \item \textbf{Intrarea Nebalansată:} Utilizează un buffer cu impedanță ridicată (>10k$\Omega$) pentru a nu încărca sursa de semnal.
+\end{itemize}
+
+\subsection{Selectarea câștigului (+4dBu / -10dBV)}
+Pentru a adapta nivelurile de semnal, a fost implementat un etaj de amplificare cu câștig selectabil. Acest lucru permite aducerea semnalului la un nivel nominal de aproximativ 1Vrms, indiferent dacă sursa este un echipament profesional (+4dBu) sau unul consumer (-10dBV). Comutarea se realizează prin modificarea raportului de feedback în etajul de preamplificare.
+
+\section{Procesarea Digitală a Semnalului (DSP)}
+Nucleul sistemului este procesorul \textbf{ADAU1701} \cite{adau1701}. Acesta integrează două ADC-uri (Analog-to-Digital Converters) și patru DAC-uri (Digital-to-Analog Converters), permițând procesarea în timp real la 24 de biți.
+
+\subsection{Condiționarea intrărilor ADC}
+ADC-urile integrate în ADAU1701 sunt de tip \textit{current-input}. Pentru a converti tensiunea de la preamplificator în curent, s-au utilizat rezistențe serie de \textbf{18k$\Omega$}. Împreună cu rezistența internă de 2k$\Omega$, acestea formează o impedanță de 20k$\Omega$, ceea ce setează nivelul de full-scale (0dBFS) la 2Vrms. Această configurație oferă un headroom de 6dB față de semnalul nominal de intrare.
+
+\subsection{Configurarea frecvenței de eșantionare}
+Pentru o funcționare optimă la 48kHz, pinul \texttt{ADC\_RES} a fost conectat la masă printr-o rezistență externă de 18k$\Omega$. Această valoare este critică pentru stabilitatea conversiei și calitatea audio.
+
+\section{Etajele de ieșire}
+Sistemul dispune de două tipuri de ieșiri:
+\begin{itemize}
+    \item \textbf{Ieșiri de linie balansate:} Patru canale destinate conectării la alte echipamente de procesare sau monitoare active.
+    \item \textbf{Ieșiri de putere (Clasa D):} Patru canale de putere eficiente, capabile să acționeze direct incinte acustice de 4 sau 8 $\Omega$.
+\end{itemize}
+
+\section{Sistemul de alimentare și managementul masei}
+Întregul sistem este alimentat de la o sursă de \textbf{12V DC}. Pentru a permite funcționarea amplificatoarelor operaționale alimentate asimetric, s-a proiectat un circuit de \textbf{masă virtuală} ($V_{cc}/2$) utilizând un amplificator operațional TL072 în configurație de buffer de putere. 
+
+Acest design asigură o referință stabilă pentru semnalele audio, minimizând zgomotul de comutație și interferențele între etajele analogice și cele digitale.

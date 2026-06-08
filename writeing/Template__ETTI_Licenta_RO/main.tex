@@ -1,0 +1,100 @@
+
+\documentclass[12pt, a4paper, oneside, romanian]{teza-upb}
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+\usepackage{babel}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usepackage{circuitikz}
+\usepackage{pgfplots}
+\usepackage{float}
+\usepackage{indentfirst}
+\addto\captionsromanian{\renewcommand{\tablename}{Tabelul}}
+\pgfplotsset{compat=1.18}
+\usepackage[
+  bookmarks,
+  bookmarksopen=true,
+  pdftitle={Dizertatie},
+  linktocpage]{hyperref}
+
+\singlespacing
+
+\usepackage{listings}
+\usepackage{color}
+ 
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+	language=Matlab,
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{blue},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+	basicstyle=\ttfamily\scriptsize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+\begin{document}
+
+\author{Prenume NUME student}
+
+\title{Amplificator audio multicanal cu procesor digital de semnal programabil}
+
+\facultatea{Facultatea de Electronică, Telecomunicații și Tehnologia Informației}
+\tiplucrare{Dizertație}
+\domeniu{Telecomunicații}
+\catedra{Telecomunicații}
+\campus{Leu} 
+\program{Tehnologii Multimedia pentru Producția de Conținut în Domeniul Audiovizualului și Comunicațiilor}
+\titlulobtinut{Master}
+\director{Ș.L. dr. ing. Victor POPA} 
+
+\submissionmonth{Iunie} 
+\submissionyear{2026} 
+
+\beforepreface
+\listoffigures
+\listoftables
+
+\abbreviations{ 
+  DSP = eng. Digital Signal Processor\\
+  ADC = eng. Analog-to-Digital Converter\\
+  DAC = eng. Digital-to-Analog Converter\\
+  CMRR = eng. Common Mode Rejection Ratio\\
+  SNR = eng. Signal-to-Noise Ratio\\
+  THD = eng. Total Harmonic Distortion\\
+  I2C = eng. Inter-Integrated Circuit
+}
+
+\afterpreface 
+
+\include{Capitolul_0_Introducere}
+\include{Capitolul_1_Teorie}
+\include{Capitolul_2_Proiectare}
+\include{Capitolul_3_Implementare}
+\include{Capitolul_4_Testare}
+
+\bibliographystyle{IEEEtran}
+\bibliography{referinte}
+
+\appendix
+\include{Appendix1}
+
+\end{document}
