@@ -1,6 +1,6 @@
 \chapter{Aspecte teoretice \label{theory}}
 
-Acest capitol prezintă fundamentele teoretice necesare înțelegerii proiectului. Începem cu definirea standardelor de nivel analogic și digital. Apoi, analizăm topologiile interfețelor de linie (intrare și ieșire). Urmează studiul proceselor de conversie și prelucrare digitală a semnalelor. În final, sunt descrise principiile de funcționare ale amplificatoarelor în clasa D.
+Acest capitol prezintă fundamentele teoretice necesare înțelegerii proiectului. Începem cu definirea standardelor de nivel analogic și digital. Apoi, analizăm interfețele de linie (intrare și ieșire). Urmează studiul procesului de conversie și prelucrare digitală a semnalelor. În final, sunt descrise principiile de funcționare ale amplificatoarelor în clasa D.
 \subsection{Standardele analogice: dBu și dBV}
 Cele două standarde principale pentru nivelul nominal al semnalului de linie sunt definite pe referințe de tensiune diferite \cite{douglasself}. Nivelul semnalului, exprimat în decibeli raportați la o tensiune de referință $V_0$, este calculat conform relației generale:
 \begin{equation}
@@ -29,21 +29,20 @@ Această formulă definește cele două niveluri utilizate în practică:
 \subsection{Standardul digital: dBFS}
 Odată ce semnalul ajunge în domeniul numeric, unitățile de măsură raportate la tensiuni absolute își pierd relevanța, fiind înlocuite de \textbf{dBFS} (Decibels relative to Full Scale), conform standardului AES17 \cite{aes17_2020}. Această scară raportează amplitudinea semnalului digital la valoarea maximă ce poate fi reprezentată de convertorul analog-digital (ADC) fără a produce saturație.
 
-Valoarea de $0\text{ dBFS}$ reprezintă nivelul maxim (Full Scale), toate celelalte valori fiind exprimate prin numere negative. Într-un sistem de prelucrare numerică, menținerea unei rezerve dinamice, cunoscută sub numele de \textbf{headroom}, este esențială sub pragul de $0\text{ dBFS}$. Orice încercare de a reprezenta un semnal peste acest prag conduce la fenomenul de \textbf{clipping} digital, care cauzează distorsiuni armonice severe și alterarea iremediabilă a formei de undă.
+Valoarea de $0\text{ dBFS}$ reprezintă nivelul maxim (Full Scale), toate celelalte valori fiind exprimate prin numere negative. Într-un sistem de prelucrare numerică, menținerea unei rezerve dinamice, cunoscută sub numele de \textbf{headroom}, este esențială sub pragul de $0\text{ dBFS}$. Orice încercare de a reprezenta un semnal peste acest prag conduce la fenomenul de \textbf{clipping} digital, care cauzează distorsiuni armonice.
 
 \section{Interfețe analogice de linie echilibrate și neechilibrate}
 Proiectarea interfețelor analogice de linie trebuie să asigure integritatea semnalului și o rejecție optimă a zgomotului, conform principiilor descrise de Douglas Self în \cite{douglasself}. Un aspect fundamental în acest proces este gestionarea corectă a impedanțelor de intrare și de ieșire.
 
 \subsection{Adaptarea în tensiune}
-Spre deosebire de sistemele de radiofrecvență unde se urmărește transferul maxim de putere prin egalarea impedanțelor, ingineria audio  se bazează pe principiul \textit{adaptării în tensiune}. Acest concept presupune ca etajul de ieșire al unei surse să prezinte o impedanță cât mai mică, în timp ce etajul de intrarea să prezinte o impedanță cât mai mare.
+Spre deosebire de sistemele de radiofrecvență unde se urmărește transferul maxim de putere prin egalarea impedanțelor, ingineria audio se bazează pe principiul \textit{adaptării în tensiune}. Acest concept presupune ca etajul de ieșire al unei surse să prezinte o impedanță cât mai mică ($Z_{out} \to 0$), în timp ce etajul de intrare să prezinte o impedanță cât mai mare ($Z_{in} \to \infty$).
 
-Această abordare oferă mai multe avantaje critice:
 \begin{itemize}
-    \item \textbf{Impedanța de intrare ($Z_{in}$):} Trebuie să fie suficient de ridicată (uzual peste $10\text{ k}\Omega$) pentru a nu „încărca” sursa de semnal. O impedanță de intrare prea mică ar forța etajul de ieșire al sursei să livreze un curent mai mare, ceea ce conduce la o posibilă atenuare a frecvențelor joase dacă există condensatoare.
-    \item \textbf{Impedanța de ieșire ($Z_{out}$):} Trebuie să fie menținută la o valoare scăzută (tipic sub $100\text{ }\Omega$). Această cerință este esențială pentru a asigura capacitatea de a conduce sarcini capacitive, precum cablurile lungi de interconectare, fără a introduce un filtru trece-jos nedorit care ar limita lărgimea de bandă a sistemului în domeniul frecvențelor înalte.
+    \item \textbf{Impedanța de intrare ($Z_{in}$):} Aceasta trebuie să fie suficient de ridicată, valorile uzuale fiind situate peste $10\text{ k}\Omega$. O impedanță de intrare prea mică exercită o sarcină excesivă asupra sursei, forțând etajul de ieșire al acesteia să livreze un curent mai mare decât poate genera, ceea ce poate duce la distorsiuni. De asemenea se produce și atenuarea frecvențelor joase prin formarea unui filtru trece-sus.
+    \item \textbf{Impedanța de ieșire ($Z_{out}$):} Valoarea acesteia trebuie menținută la un nivel scăzut, de regulă în jur de  $100\text{ }\Omega$. O impedanță de ieșire ridicată limitează capacitatea sistemului de a conduce sarcini capacitive, precum cablurile lungi de interconectare. Rezultatul este formarea unui filtru trece-jos nedorit care atenuează frecvențele înalte.
 \end{itemize}
 
-Menținerea unui raport de minim $1:10$ între impedanța sursei și cea a intrării este considerată o regulă de bază pentru a garanta o eroare de transmisie cât mai mică și o fidelitate maximă a semnalului. Acest mecanism de transfer este modelat în Figura \ref{fig:impedance_transfer}, unde se observă formarea unui divizor rezistiv între sursă și sarcină.
+Menținerea unui raport de minim $1:10$ între impedanța sursei și cea a sarcinii este considerată o regulă fundamentală pentru a garanta o eroare de transmisie minimă și o fidelitate maximă a semnalului. Acest mecanism de transfer este modelat în Figura \ref{fig:impedance_transfer}, unde se observă formarea unui divizor rezistiv între sursă și sarcină.
 
 \begin{figure}[H]
     \centering
@@ -68,22 +67,22 @@ Menținerea unui raport de minim $1:10$ între impedanța sursei și cea a intr�
         \node[color=gray, align=center] at (-1, 3.0) {\textbf{SURSĂ}\\[-1ex]\tiny (Ieșire)};
         \node[color=gray, align=center] at (4, 3.0) {\textbf{SARCINĂ}\\[-1ex]\tiny (Intrare)};
     \end{circuitikz}
-    \caption{Modelul echivalent al transferului de tensiune între două etaje audio}
+    \caption{Modelul echivalent al transferului de tensiune între două etaje}
     \label{fig:impedance_transfer}
 \end{figure}
 
-Tensiunea recepționată la intrare ($V_{in}$) este determinată de relația divizorului de tensiune:
+Tensiunea de la intrare ($V_{in}$) este determinată de relația divizorului de tensiune:
 \begin{equation}
     V_{in} = V_{out} \cdot \frac{Z_{in}}{Z_{out} + Z_{in}}
 \end{equation}
 
-\subsection{Topologii de interfete de linie}
+\subsection{Interfete analogice de linie}
 Există două tipuri fundamentale de interfețe audio analogice, fiecare cu cerințe specifice de proiectare.
 
 \subsubsection{Interfața neechilibrată}
-Un etaj de intrare neechilibrat performant trebuie să asigure o impedanță de intrare constantă și să includă elemente de protecție împotriva interferențelor externe. 
+Un etaj de intrare neechilibrat trebuie să asigure o impedanță de intrare constantă și să includă elemente de protecție împotriva interferențelor externe. 
 
-Schema tipică a unui astfel de etaj, bazată pe recomandările de design profesional, este prezentată în Figura \ref{fig:unbalanced_input_theory}.
+Schema tipică a unui astfel de etaj, este prezentată în Figura \ref{fig:unbalanced_input_theory}.
 
 \begin{figure}[H]
     \centering
@@ -109,21 +108,22 @@ Schema tipică a unui astfel de etaj, bazată pe recomandările de design profes
     \label{fig:unbalanced_input_theory}
 \end{figure}
 
-Elementele componente au următoarele roluri critice în menținerea calității semnalului:
+Componentele folosite au următoarele roluri critice în menținerea calității semnalului:
 \begin{itemize}
     \item \textbf{Filtrul RF ($R_{rf}, C_{rf}$):} Formează un filtru trece-jos cu frecvența de tăiere situată mult peste banda audio (uzual în domeniul sutelor de kHz), având rolul de a bloca pătrunderea semnalelor de radiofrecvență care ar putea fi demodulate de etajele active ulterioare.
     \item \textbf{Condensatorul de cuplaj ($C_{dc}$):} Blochează orice componentă de curent continuu provenită de la sursă, protejând etajele de amplificare de offset-uri de tensiune nedorite.
     \item \textbf{Rezistența de intrare ($R_{in}$):} Stabilește impedanța de intrare a sistemului (tipic $22\text{ k}\Omega - 47\text{ k}\Omega$).
+    \item \textbf{Amplificatorul operațional (Buffer):} Configurația de repetor de tensiune (câștig unitar) asigură o impedanță de intrare ridicată și o impedanță de ieșire scăzută. Acest etaj acționează ca un izolator, prevenind încărcarea sursei și asigurând un transfer de tensiune cât mai fidel către etajele următoare.
 \end{itemize}
 
 \subsubsection{Interfața echilibrată}
-Transmisia echilibrată (balansată) utilizează doi conductori activi, denumiți „Cald” (semnal în fază) și „Rece” (semnal în antifază). Un aspect adesea neînțeles în ingineria audio este faptul că rejetul zgomotului de mod comun nu depinde de simetria semnalelor, ci de egalitatea impedanțelor fiecărui conductor față de masă \cite{Whitlock1995balanced}. Orice interferență electromagnetică indusă pe parcursul cablului va afecta în mod egal ambii conductori doar dacă impedanțele acestora sunt perfect echilibrate.
+Transmisia echilibrată (balansată) utilizează doi conductori activi, denumiți „Cald” (semnal în fază) și „Rece” (semnal în antifază). Un aspect important este faptul că rejectia zgomotului de mod comun depinde de egalitatea impedanțelor fiecărui conductor față de masă \cite{Whitlock1995balanced}. Orice interferență electromagnetică indusă pe parcursul cablului va afecta în mod egal ambii conductori doar dacă impedanțele acestora sunt perfect echilibrate.
 
-Acest mecanism de rejecție este ilustrat vizual în Figura \ref{fig:cmrr_signals}. Prin scăderea matematică a celor două semnale la destinație prin intermediul unui amplificator diferențial, componenta utilă se însumează constructiv, în timp ce zgomotul de mod comun este anulat.
+Acest mecanism de rejecție este ilustrat vizual în Figura \ref{fig:cmrr_signals}. Prin scăderea matematică a celor două semnale cu intermediul unui amplificator diferențial, componenta utilă se însumează constructiv, în timp ce zgomotul de mod comun este anulat.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{figuri/cmrr_signals.pdf}
+    \includegraphics[width=0.7\textwidth]{figuri/cmrr_signals.pdf}
     \caption{Reprezentarea anulării zgomotului de mod comun prin transmisie echilibrată}
     \label{fig:cmrr_signals}
 \end{figure}
@@ -144,12 +144,12 @@ Pentru a realiza această operație în domeniul analogic, se utilizează un amp
     \label{fig:diff_amp_theory}
 \end{figure}
 
-Tensiunea la ieșirea amplificatorului diferențial ($V_{out}$) este guvernată de legea superpoziției și se calculează cu ecuația:
+Tensiunea la ieșirea amplificatorului diferențial ($V_{out}$) rezultă din legea superpoziției și se calculează cu ecuația:
 \begin{equation}
     V_{out} = V_{Cald} \cdot \left( \frac{R_4}{R_3 + R_4} \right) \cdot \left( 1 + \frac{R_2}{R_1} \right) - V_{Rece} \cdot \left( \frac{R_2}{R_1} \right)
 \end{equation}
 
-Pentru a asigura o anulare perfectă a semnalului de mod comun, este strict necesară respectarea condiției de echilibru a punții rezistive:
+Pentru a asigura o anulare perfectă a semnalului de mod comun, este strict necesară respectarea următoarei condiții:
 \begin{equation}
     \frac{R_1}{R_2} = \frac{R_3}{R_4}
 \end{equation}
@@ -159,18 +159,17 @@ Dacă această condiție este îndeplinită, ecuația se simplifică, iar sistem
 \end{equation}
 
 \subsection{Calculul și măsurarea raportului de rejecție (CMRR)}
-Capacitatea reală a circuitului de a respinge interferențele este cuantificată prin parametrul \textbf{CMRR} (Common Mode Rejection Ratio). Acesta se definește ca raportul logaritmic între câștigul diferențial ($A_d$) și câștigul de mod comun ($A_{cm}$):
+Capacitatea reală a circuitului de a respinge interferențele este cuantificată prin parametrul \textbf{CMRR} (Common Mode Rejection Ratio). Conform standardului IEC 60268-3 \cite{iec60268_3}, acesta se definește ca raportul logaritmic între câștigul diferențial ($A_d$) și câștigul de mod comun ($A_{cm}$):
 \begin{equation}
     CMRR [dB] = 20 \log_{10} \left| \frac{A_d}{A_{cm}} \right|
 \end{equation}
 
 Unde câștigul de mod comun, $A_{cm}$, reprezintă raportul dintre variația tensiunii de ieșire și variația tensiunii aplicate simultan pe ambele intrări. Într-un sistem ideal, $A_{cm}$ ar trebui să fie egal cu zero, conducând la un CMRR infinit.
 
-Măsurarea practică a acestui parametru presupune parcurgerea următorilor pași, conform metodologiei descrise în \cite{douglasself}:
+Metodologia de măsurare standardizată presupune parcurgerea următorilor pași, fundamentați pe recomandările IEC 60268-3 \cite{iec60268_3} și bunele practici de laborator descrise de Douglas Self \cite{douglasself}:
 \begin{enumerate}
-    \item \textbf{Determinarea câștigului diferențial ($A_d$):} Se aplică un semnal de test între bornele „Cald” și „Rece” și se măsoară amplitudinea la ieșirea etajului.
-    \item \textbf{Determinarea câștigului de mod comun ($A_{cm}$):} Cele două borne de intrare se conectează într-un punct comun, asupra căruia se aplică un semnal de test de amplitudine ridicată raportat la masă. Tensiunea reziduală măsurată la ieșire permite calculul factorului de transfer pentru semnalul de mod comun.
-    \item \textbf{Calculul final:} Raportul dintre cele două valori obținute indică eficiența etajului în eliminarea perturbațiilor induse pe parcursul cablului.
+    \item \textbf{Determinarea câștigului diferențial ($A_d$):} Se aplică un semnal sinusoidal de test (tipic $1\text{ kHz}$) între bornele „Cald” și „Rece”. Tensiunea rezultată la ieșire ($V_{out,d}$) permite calcularea factorului de transfer diferențial: $A_d = V_{out,d} / V_{in,d}$.
+    \item \textbf{Determinarea câștigului de mod comun ($A_{cm}$):} Cele două borne de intrare se conectează într-un punct comun (în scurtcircuit), asupra căruia se aplică un semnal de test de amplitudine ridicată raportat la masă. Tensiunea reziduală măsurată la ieșire ($V_{out,cm}$) permite determinarea câștigului de mod comun: $A_{cm} = V_{out,cm} / V_{in,cm}$.
 \end{enumerate}
 
 Performanța acestui indicator este dictată în mod direct de toleranța de fabricație a rezistențelor utilizate, fenomen modelat în Figura \ref{fig:cmrr_tolerance}.
@@ -182,12 +181,24 @@ Performanța acestui indicator este dictată în mod direct de toleranța de fab
     \label{fig:cmrr_tolerance}
 \end{figure}
 
-Așa cum demonstrează analiza, utilizarea unor rezistențe cu toleranță standard de $1\%$ plafonează valoarea CMRR la aproximativ $40\text{ dB}$, ceea ce este adesea insuficient pentru mediile electromagnetice zgomotoase. Obținerea unui nivel profesional de rejecție de minim $60\text{ dB}$ impune utilizarea exclusivă a componentelor pasive de precizie ridicată, cu o toleranță de maxim $0.1\%$ \cite{douglasself}.
+Pe baza analizei din Figura \ref{fig:cmrr_tolerance}, se observă că utilizarea unor rezistențe cu toleranță standard de $1\%$ plafonează valoarea CMRR la aproximativ $40\text{ dB}$, ceea ce este adesea insuficient pentru mediile electromagnetice zgomotoase. Obținerea unui nivel profesional de rejecție de minim $60\text{ dB}$ impune utilizarea exclusivă a componentelor pasive de precizie ridicată, cu o toleranță de maxim $0.1\%$ \cite{douglasself}.
 
 \section{Procesarea digitală a semnalelor}
 După condiționarea analogică, semnalul este digitizat prin procese de eșantionare și cuantizare, bazate pe teorema Nyquist-Shannon \cite{oppenheim2010discrete}.
 
 \subsection{Eșantionarea și cuantizarea}
+Conversia semnalului analogic în domeniu digital presupune două etape: eșantionarea (discretizarea în timp) și cuantizarea (discretizarea în amplitudine).
+
+Conform teoremei Nyquist-Shannon \cite{oppenheim2010discrete}, pentru a evita fenomenul de \textbf{aliere spectrală} (aliasing) și a permite reconstrucția fidelă a semnalului, frecvența de eșantionare $f_s$ trebuie să fie cel puțin dublul frecvenței maxime din spectrul util ($f_s > 2 f_{max}$). În sistemele audio profesionale, se utilizează $f_s = 48\text{ kHz}$ sau chiar $f_s = 96\text{ kHz}$.
+
+Cuantizarea presupune aproximarea amplitudinii fiecărui eșantion la cel mai apropiat nivel dintr-o scară definită pe $N$ biți, proces ilustrat în Figura \ref{fig:sampling}. Această aproximare introduce un \textbf{zgomot de cuantizare}, raportul semnal-zgomot ($SNR$) teoretic fiind determinat de numărul de biți de rezoluție conform relației fundamentale \cite{zolzer2011dafx}:
+
+\begin{equation}
+    SNR [dB] \approx 6.02 \cdot N + 1.76
+    \label{eq:snr_quantization}
+\end{equation}
+
+În cazul sistemelor audio care utilizează o rezoluție de $N=24$ biți, raportul semnal-zgomot teoretic atinge valoarea de $146.24\text{ dB}$. Această performanță asigură o rezervă dinamică vastă, situând pragul zgomotului de cuantizare mult sub nivelul zgomotului componentelor analogice, eliminându-l astfel ca factor în lanțul de procesare.
 
 \begin{figure}[H]
     \centering
@@ -218,49 +229,14 @@ După condiționarea analogică, semnalul este digitizat prin procese de eșanti
     \label{fig:sampling}
 \end{figure}
 
-Utilizarea unei frecvențe de $48\text{ kHz}$ asigură o bandă de tranziție necesară filtrelor reale pentru a preveni fenomenul de \textbf{aliere spectrală} (Figura \ref{fig:aliasing}). Performanța cuantizării pe $24$ biți oferă un SNR teoretic de $146.24\text{ dB}$, calculat conform relației $6.02 \cdot N + 1.76$ \cite{zolzer2011dafx}.
+\subsection{Convertoare Delta-Sigma ($\Delta\Sigma$)}
+Conversia audio de înaltă rezoluție utilizează arhitecturi \textbf{Delta-Sigma} bazate pe supraeșantionare și modelarea zgomotului (noise shaping) \cite{zolzer2011dafx}. Prin operarea unui cuantizor de 1 bit la o frecvență mult peste pragul Nyquist, zgomotul de cuantizare este distribuit spectral, iar bucla de feedback a modulatorului îl „împinge” către frecvențele ultrasonice.
 
-\begin{figure}[H]
-    \centering
-    \begin{tikzpicture}
-        \begin{axis}[
-            axis lines = middle,
-            xlabel = {Frecvență [kHz]},
-            ylabel = {$|X(f)|$},
-            height=8cm, width=\textwidth,
-            xmin=0, xmax=52,
-            ymin=0, ymax=1.7,
-            xtick={20, 24, 28, 48},
-            xticklabels={
-                $f_{max}$\\[-1ex]\tiny(20), 
-                $f_s/2$\\[-1ex]\tiny(24), 
-                \hspace{6mm}$f_s-f_{max}$\\[-1ex]\hspace{6mm}\tiny(28), 
-                $f_s$\\[-1ex]\tiny(48)
-            },
-            xticklabel style={align=center, font=\small},
-            ytick=\empty,
-            enlargelimits={upper=0.1}
-        ]
-            \fill[blue!15] (axis cs:0,0) rectangle (axis cs:20,1);
-            \draw[blue, thick] (axis cs:0,0) -- (axis cs:0,1) -- (axis cs:20,1) -- (axis cs:20,0);
-            \node[blue, font=\bfseries] at (axis cs:10,0.5) {Spectru util};
-            \fill[gray!10] (axis cs:28,0) rectangle (axis cs:52,1);
-            \draw[gray, thick, dashed] (axis cs:28,0) -- (axis cs:28,1) -- (axis cs:52,1);
-            \node[gray, font=\small] at (axis cs:38,0.5) {Replica spectrală};
-            \addplot [domain=0:20, red, very thick] {1.0}; 
-            \addplot [domain=20:24, red, very thick] {1.0 - 1.0*((x-20)/4)^2}; 
-            \addplot [domain=24:52, red, very thick] {0}; 
-            \node[red, anchor=south west, font=\small] at (axis cs:1,1.05) {Filtru Anti-aliere};
-            \draw[dotted, thick, black] (axis cs:24,0) -- (axis cs:24,1.4);
-            \draw[<->, thick, black!70] (axis cs:20,1.15) -- (axis cs:24,1.15) node[midway, above, font=\tiny, align=center] {Bandă de\\tranziție};
-        \end{axis}
-    \end{tikzpicture}
-    \caption{Reprezentarea spectrală a eșantionării și rolul filtrului anti-aliere ($f_s = 48$ kHz)}
-    \label{fig:aliasing}
-\end{figure}
-
-\subsection{Arhitectura sistemului de procesare}
-Nucleul hardware este reprezentat de procesorul \textbf{ADAU1701} \cite{irrgang2002sigmadsp}. Arhitectura \textit{SigmaDSP} utilizaeză un nucleu pe $28$ biți și acumulatori pe $56$ biți pentru a minimiza erorile de rotunjire în calculele recursive \cite{zolzer2011dafx}. Configurarea se realizează grafic în mediul \textit{SigmaStudio}, oferind control precis asupra fluxului audio în timp real.
+La ADC, acest proces este urmat de un filtru de decimare care elimină zgomotul de înaltă frecvență și livrează datele la rezoluția țintă (ex. 24 biți). Simetric, la DAC, semnalul este interpolat și trecut printr-un modulator digital, valoarea medie fiind extrasă de un filtru analogic de reconstrucție.
 
 \section{Amplificarea în Clasa D}
-Etapa finală folosește modulația în lățime a impulsurilor (PWM) pentru a asigura o eficiență de peste $90\%$. Schema include un etaj de putere cu tranzistoare MOSFET și un filtru de reconstrucție LC de ordinul 2 pentru a livra un semnal curat la ieșire.
+Amplificatoarele în clasa D, cunoscute și sub denumirea de amplificatoare cu comutație, funcționează pe baza principiului modulării în lățime a impulsurilor (PWM). Spre deosebire de clasele de amplificare liniare, în care tranzistoarele de putere operează în regiunea activă, în clasa D acestea funcționează exclusiv ca întrerupătoare, fiind fie în stare de conducție (saturație), fie în stare de blocare \cite{self2006audio}.
+
+Procesul de amplificare presupune transformarea semnalului audio analogic într-un semnal PWM. Această conversie se realizează prin compararea semnalului de intrare cu o undă purtătoare (triunghiulară sau dinte de fierăstrău) a cărei frecvență este mult superioară limitei superioare a benzii audio. Rezultatul este un flux de impulsuri a căror durată este proporțională cu amplitudinea instantanee a semnalului audio. Acest semnal PWM comandă etajul de putere, care comută tensiunea de alimentare pe sarcină prin intermediul unei configurații de tip punte H \cite{douglasself}.
+
+Recuperarea informației audio din semnalul de putere modulat se realizează cu ajutorul unui filtru trece-jos pasiv de tip LC, plasat înainte de ieșire. Filtrul acționează ca un integrator, eliminând componentele de înaltă frecvență ale purtătoarei și lăsând să treacă doar valoarea medie a impulsurilor, care corespunde semnalului audio original. Această metodă de operare asigură transferul de putere către sarcină cu pierderi minime pe elementele active, deoarece tranzistoarele disipă putere semnificativă doar în timpul scurtelor tranziții între stările de conducție și blocare \cite{self2006audio}.

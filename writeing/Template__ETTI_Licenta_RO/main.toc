@@ -11,13 +11,13 @@
 \contentsline {subsection}{\numberline {1.0.2}Standardul digital: dBFS}{3}{subsection.1.0.2}%
 \contentsline {section}{\numberline {1.1}Interfețe analogice de linie echilibrate și neechilibrate}{4}{section.1.1}%
 \contentsline {subsection}{\numberline {1.1.1}Adaptarea în tensiune}{4}{subsection.1.1.1}%
-\contentsline {subsection}{\numberline {1.1.2}Topologii de interfete de linie}{5}{subsection.1.1.2}%
+\contentsline {subsection}{\numberline {1.1.2}Interfete analogice de linie}{5}{subsection.1.1.2}%
 \contentsline {subsubsection}{\numberline {1.1.2.1}Interfața neechilibrată}{5}{subsubsection.1.1.2.1}%
 \contentsline {subsubsection}{\numberline {1.1.2.2}Interfața echilibrată}{5}{subsubsection.1.1.2.2}%
 \contentsline {subsection}{\numberline {1.1.3}Calculul și măsurarea raportului de rejecție (CMRR)}{7}{subsection.1.1.3}%
 \contentsline {section}{\numberline {1.2}Procesarea digitală a semnalelor}{8}{section.1.2}%
 \contentsline {subsection}{\numberline {1.2.1}Eșantionarea și cuantizarea}{8}{subsection.1.2.1}%
-\contentsline {subsection}{\numberline {1.2.2}Arhitectura sistemului de procesare}{9}{subsection.1.2.2}%
+\contentsline {subsection}{\numberline {1.2.2}Convertoare Delta-Sigma ($\Delta \Sigma $)}{8}{subsection.1.2.2}%
 \contentsline {section}{\numberline {1.3}Amplificarea în Clasa D}{9}{section.1.3}%
 \contentsline {chapter}{\numberline {2}Proiectarea Arhitecturii Hardware }{10}{chapter.2}%
 \contentsline {section}{\numberline {2.1}Interfața de intrare și preamplificarea}{10}{section.2.1}%

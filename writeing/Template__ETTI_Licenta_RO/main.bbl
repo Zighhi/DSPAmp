@@ -35,6 +35,10 @@ B.~Whitlock, ``Balanced lines in audio systems: Fact, fiction, and
   transformers,'' \emph{Journal of the Audio Engineering Society}, vol.~43,
   no.~6, pp. 454--464, June 1995.
 
+\bibitem{iec60268_3}
+\emph{Sound system equipment - Part 3: Amplifiers}, International
+  Electrotechnical Commission Std. IEC 60\,268-3:2013, 2013.
+
 \bibitem{oppenheim2010discrete}
 A.~V. Oppenheim and R.~W. Schafer, \emph{Discrete-Time Signal Processing},
   3rd~ed.\hskip 1em plus 0.5em minus 0.4em\relax Pearson Higher Education,
@@ -44,10 +48,9 @@ A.~V. Oppenheim and R.~W. Schafer, \emph{Discrete-Time Signal Processing},
 U.~Z{\"o}lzer, \emph{{DAFX}: Digital Audio Effects}, 2nd~ed.\hskip 1em plus
   0.5em minus 0.4em\relax John Wiley \& Sons, 2011.
 
-\bibitem{irrgang2002sigmadsp}
-T.~Irrgang, ``Simplify audio setups with a {{SigmaDSP}}™ pre-programmed fully
-  configurable digital audio processor,'' \emph{Analog Dialogue}, vol.~36,
-  no.~1, pp. 1--4, 2002.
+\bibitem{self2006audio}
+D.~Self, \emph{Audio Power Amplifier Design Handbook}, 4th~ed.\hskip 1em plus
+  0.5em minus 0.4em\relax Focal Press/Elsevier, 2006.
 
 \bibitem{opa2134}
 \emph{{OPA2134}: {SoundPlus} High Performance Audio Operational Amplifiers},
