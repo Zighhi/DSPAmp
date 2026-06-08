@@ -1,0 +1,42 @@
+\babel@toc {romanian}{}\relax 
+\contentsline {chapter}{Lista figurilor}{iii}{chapter*.2}%
+\contentsline {chapter}{Lista tabelelor}{iv}{chapter*.3}%
+\contentsline {unnumberedsection}{Lista acronimelor}{v}{chapter*.4}%
+\contentsline {chapter}{Introducere}{1}{chapter*.5}%
+\contentsline {section}{Motivație}{1}{section*.6}%
+\contentsline {section}{Obiective}{1}{section*.7}%
+\contentsline {section}{Aplicabilitate}{2}{section*.8}%
+\contentsline {chapter}{\numberline {1}Aspecte teoretice }{3}{chapter.1}%
+\contentsline {subsection}{\numberline {1.0.1}Standardele analogice: dBu și dBV}{3}{subsection.1.0.1}%
+\contentsline {subsection}{\numberline {1.0.2}Standardul digital: dBFS}{3}{subsection.1.0.2}%
+\contentsline {section}{\numberline {1.1}Interfețe analogice de linie echilibrate și neechilibrate}{4}{section.1.1}%
+\contentsline {subsection}{\numberline {1.1.1}Adaptarea în tensiune}{4}{subsection.1.1.1}%
+\contentsline {subsection}{\numberline {1.1.2}Topologii de interfete de linie}{5}{subsection.1.1.2}%
+\contentsline {subsubsection}{\numberline {1.1.2.1}Interfața neechilibrată}{5}{subsubsection.1.1.2.1}%
+\contentsline {subsubsection}{\numberline {1.1.2.2}Interfața echilibrată}{5}{subsubsection.1.1.2.2}%
+\contentsline {subsection}{\numberline {1.1.3}Calculul și măsurarea raportului de rejecție (CMRR)}{7}{subsection.1.1.3}%
+\contentsline {section}{\numberline {1.2}Procesarea digitală a semnalelor}{8}{section.1.2}%
+\contentsline {subsection}{\numberline {1.2.1}Eșantionarea și cuantizarea}{8}{subsection.1.2.1}%
+\contentsline {subsection}{\numberline {1.2.2}Arhitectura sistemului de procesare}{9}{subsection.1.2.2}%
+\contentsline {section}{\numberline {1.3}Amplificarea în Clasa D}{9}{section.1.3}%
+\contentsline {chapter}{\numberline {2}Proiectarea Arhitecturii Hardware }{10}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Interfața de intrare și preamplificarea}{10}{section.2.1}%
+\contentsline {subsection}{\numberline {2.1.1}Etajul de intrare balansat și nebalansat}{10}{subsection.2.1.1}%
+\contentsline {subsection}{\numberline {2.1.2}Selectarea câștigului (+4dBu / -10dBV)}{10}{subsection.2.1.2}%
+\contentsline {section}{\numberline {2.2}Procesarea Digitală a Semnalului (DSP)}{10}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}Condiționarea intrărilor ADC}{12}{subsection.2.2.1}%
+\contentsline {subsection}{\numberline {2.2.2}Configurarea frecvenței de eșantionare}{12}{subsection.2.2.2}%
+\contentsline {section}{\numberline {2.3}Etajele de ieșire}{12}{section.2.3}%
+\contentsline {section}{\numberline {2.4}Sistemul de alimentare și managementul masei}{12}{section.2.4}%
+\contentsline {chapter}{\numberline {3}Implementarea Practică a Sistemului pe Perfboard }{13}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Strategia de layout și asamblare}{13}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Realizarea modulelor individuale}{13}{section.3.2}%
+\contentsline {section}{\numberline {3.3}Probleme întâmpinate la implementare}{13}{section.3.3}%
+\contentsline {chapter}{\numberline {4}Testarea Sistemului și Analiza Performanțelor }{14}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Setup-ul de testare}{14}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Măsurători experimentale}{14}{section.4.2}%
+\contentsline {section}{\numberline {4.3}Validarea funcționării programatorului și a algoritmilor DSP}{14}{section.4.3}%
+\contentsline {section}{\numberline {4.4}Concluzii și direcții viitoare}{14}{section.4.4}%
+\contentsline {unnumberedsection}{Referințe bibliografice}{15}{chapter*.9}%
+\contentsline {chapter}{\appnumberline {A}Rezolvare ''Cinci Pâini''}{16}{appendix.A}%
+\contentsline {chapter}{\appnumberline {B}Alte povești și basme}{17}{appendix.B}%

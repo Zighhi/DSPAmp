@@ -1,0 +1,70 @@
+This is BibTeX, Version 0.99e
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: main.aux
+Reallocating 'name_of_file' (item size: 1) to 28 items.
+A level-1 auxiliary file: Capitolul_0_Introducere.aux
+Reallocating 'name_of_file' (item size: 1) to 23 items.
+A level-1 auxiliary file: Capitolul_1_Teorie.aux
+Reallocating 'name_of_file' (item size: 1) to 27 items.
+A level-1 auxiliary file: Capitolul_2_Proiectare.aux
+Reallocating 'name_of_file' (item size: 1) to 29 items.
+A level-1 auxiliary file: Capitolul_3_Implementare.aux
+Reallocating 'name_of_file' (item size: 1) to 24 items.
+A level-1 auxiliary file: Capitolul_4_Testare.aux
+Reallocating 'name_of_file' (item size: 1) to 9 items.
+The style file: IEEEtran.bst
+Reallocating 'name_of_file' (item size: 1) to 10 items.
+Reallocating 'name_of_file' (item size: 1) to 14 items.
+A level-1 auxiliary file: Appendix1.aux
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'wiz_functions' (item size: 4) to 6000 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Database file #1: referinte.bib
+-- IEEEtran.bst version 1.14 (2015/08/26) by Michael Shell.
+-- http://www.michaelshell.org/tex/ieeetran/bibtex/
+-- See the "IEEEtran_bst_HOWTO.pdf" manual for usage information.
+
+Done.
+You've used 8 entries,
+            4087 wiz_defined-function locations,
+            876 strings with 8459 characters,
+and the built_in function-call counts, 3999 in all, are:
+= -- 319
+> -- 52
+< -- 28
++ -- 24
+- -- 7
+* -- 177
+:= -- 674
+add.period$ -- 14
+call.type$ -- 8
+change.case$ -- 8
+chr.to.int$ -- 63
+cite$ -- 8
+duplicate$ -- 325
+empty$ -- 356
+format.name$ -- 8
+if$ -- 907
+int.to.chr$ -- 0
+int.to.str$ -- 8
+missing$ -- 55
+newline$ -- 47
+num.names$ -- 6
+pop$ -- 125
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 2
+skip$ -- 308
+stack$ -- 0
+substring$ -- 117
+swap$ -- 215
+text.length$ -- 7
+text.prefix$ -- 0
+top$ -- 5
+type$ -- 8
+warning$ -- 0
+while$ -- 17
+width$ -- 9
+write$ -- 91
