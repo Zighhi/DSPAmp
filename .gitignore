@@ -15,4 +15,4 @@ _autosave-*
 Thumbs.db
 
 # Documentation
-*.pdf
+# *.pdf - Commented out to track PDF files

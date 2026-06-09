@@ -108,48 +108,93 @@ Pentru a eficientiza dezvoltarea, anumite funcții complexe au fost implementate
 Implementarea etajului de intrare a urmat o abordare hibridă, vizând integrarea funcționalității pentru semnale echilibrate și neechilibrate într-o structură hardware unificată. Această metodologie de proiectare se bazează pe configurațiile fundamentale descrise de Douglas Self \cite{douglasself}, adaptate cerințelor specifice de nivel și impedanță ale sistemului multicanal.
 
 \subsection{Proiectarea etajului de intrare universal}
-Nucleul interfeței este constituit dintr-un amplificator diferențial realizat cu amplificatorul operațional \textbf{OPA2134}. Alegerea acestei topologii permite utilizarea unei căi de semnal comune pentru ambele tipuri de conexiuni. În cazul unui semnal echilibrat, circuitul procesează diferența dintre ramurile pozitivă și negativă. Pentru semnalele neechilibrate, ramura negativă a conectorului este legată la masă, circuitul funcționând ca un buffer ne-inversor.
+Nucleul interfeței este constituit dintr-un amplificator diferențial realizat cu amplificatorul operațional \textbf{OPA2134}. Această componentă a fost selectată datorită intrărilor cu tranzistori FET, care oferă un curent de polarizare extrem de scăzut și o densitate a zgomotului de tensiune de doar $8\text{ nV}/\sqrt{\text{Hz}}$, performanțe esențiale pentru menținerea integrității semnalului audio de mică amplitudine. Alegerea acestei topologii permite utilizarea unei căi de semnal comune pentru ambele tipuri de conexiuni. În cazul unui semnal echilibrat, circuitul procesează diferența dintre ramurile pozitivă și negativă. Pentru semnalele neechilibrate, ramura negativă a conectorului este legată la masă, circuitul funcționând ca un buffer ne-inversor.
 
-Această configurație, deși eficientă din punctul de vedere al numărului de componente, prezintă un dezavantaj teoretic inerent legat de dezechilibrul impedanțelor de intrare. În configurația cu un singur amplificator operațional, impedanța văzută de ramura ne-inversoare este egală cu suma rezistențelor din divizor, în timp ce ramura inversoare prezintă o impedanță mai scăzută, determinată de rezistența de intrare către nodul de masă virtuală. Acest asimetrie poate conduce la o degradare a raportului de rejecție a modului comun (CMRR) în prezența unor surse cu impedanță de ieșire ridicată sau neegală, aspect critic analizat în literatura de specialitate \cite{douglasself}.
+Această configurație, deși optimă din punctul de vedere al numărului de componente, prezintă un dezechilibru intrinsec al impedanțelor de intrare. Acest aspect este analizat riguros în literatura de specialitate, în special în documentația de referință privind proiectarea intrărilor de linie \cite[Capitolul \textit{Line Inputs}]{douglasself}. Într-o configurație clasică cu un singur amplificator operațional (conform topologiei din Figura \ref{fig:input_sch}), impedanța văzută de ramura ne-inversoare ($Z_{in+}$) este determinată de suma rezistențelor din divizor, în timp ce ramura inversoare prezintă o impedanță ($Z_{in-}$) mai mică, deoarece intrarea inversoare a amplificatorului operațional reprezintă un nod de masă virtuală. Matematic, pentru sistemul nostru:
+
+\begin{equation}
+    Z_{in+} = R_3 + R_4 = 10\text{ k}\Omega + 10\text{ k}\Omega = 20\text{ k}\Omega
+\end{equation}
+\begin{equation}
+    Z_{in-} = R_1 = 10\text{ k}\Omega
+\end{equation}
+
+Această asimetrie severă (de la simplu la dublu) degradează drastic rejecția modului comun (CMRR) în prezența oricărei impedanțe de ieșire dezechilibrate provenite de la sursa de semnal ($\Delta R_s$). Pentru a minimiza influența toleranțelor componentelor interne asupra acestui parametru critic, s-au utilizat exclusiv rezistențe cu toleranță strictă de \textbf{0.1\%}. Conform calculelor teoretice și a datelor extrase din simulările SPICE, o toleranță de $0.1\%$ a rețelei rezistive garantează un \textit{worst-case CMRR} de aproximativ $60\text{ dB}$, o valoare suficientă pentru eliminarea eficientă a brumului de rețea ($50\text{ Hz}$) și a interferențelor electromagnetice captate pe traseele de cablu lungi. Alegerea rezistențelor de $10\text{ k}\Omega$ a reprezentat compromisul optim între minimizarea zgomotului Johnson-Nyquist și menținerea unei sarcini neglijabile pentru etajele de ieșire ale echipamentelor conectate.
 
 \subsection{Filtrarea și condiționarea semnalului}
-Pentru a asigura funcționarea stabilă într-un mediu cu interferențe electromagnetice ridicate, fiecare intrare este prevăzută cu un etaj de filtrare a radiofrecvenței. Acesta este compus dintr-o rețea RC pasivă ($100\text{ }\Omega / 100\text{ pF}$), dimensionată pentru a atenua componentele de înaltă frecvență fără a afecta răspunsul în faza al spectrului audio.
+Pentru a asigura funcționarea stabilă într-un mediu predispus la interferențe electromagnetice, fiecare intrare este prevăzută cu un etaj de filtrare a radiofrecvenței (RFI). Acesta este compus dintr-o rețea RC pasivă, cu valorile $R = 100\text{ }\Omega$ și $C = 100\text{ pF}$. Frecvența de tăiere a acestui filtru trece-jos a fost calculată astfel:
 
-Cuplajul semnalului se realizează prin condensatoare non-polarizate de $47\text{ }\mu\text{F}$, care asigură blocarea tensiunilor de decalaj în curent continuu. Schema electronică detaliată, exportată din mediul de proiectare KiCad, este prezentată în Figura \ref{fig:input_sch}.
+\begin{equation}
+    f_{c_{RFI}} = \frac{1}{2\pi R C} = \frac{1}{2\pi \cdot 100\text{ }\Omega \cdot 100 \cdot 10^{-12}\text{ F}} \approx 15.9\text{ MHz}
+\end{equation}
+
+Această valoare a fost aleasă pentru a fi plasată mult peste spectrul audio ($20\text{ kHz}$), garantând absența oricărui defazaj sesizabil în banda de trecere, dar asigurând în același timp atenuarea completă a semnalelor de înaltă frecvență care ar putea cauza distorsiuni de intermodulație prin rectificare la nivelul joncțiunilor de intrare ale operaționalului.
+
+Izolarea în curent continuu este realizată folosind condensatoare electrolitice non-polarizate de $47\text{ }\mu\text{F}$. Interacționând cu impedanța minimă de intrare a etajului diferențial ($Z_{in-} = 10\text{ k}\Omega$), acestea formează un filtru trece-sus a cărui frecvență de tăiere inferioară este:
+
+\begin{equation}
+    f_{HPF} = \frac{1}{2\pi Z_{in-} C_c} = \frac{1}{2\pi \cdot 10 \cdot 10^3\text{ }\Omega \cdot 47 \cdot 10^{-6}\text{ F}} \approx 0.34\text{ Hz}
+\end{equation}
+
+Plasarea polului la $0.34\text{ Hz}$ asigură o eroare de fază sub $1^\circ$ la frecvența de $20\text{ Hz}$, un parametru critic pentru menținerea impactului tranzitoriu pe frecvențele joase ale materialului audio. Analiza SPICE în domeniul frecvenței (fișierele de log indicând variații minore de sub $0.1\text{ dB}$) a confirmat aceste calcule teoretice, demonstrând un răspuns perfect plat în banda de trecere $20\text{ Hz}-20\text{ kHz}$, ilustrat în curbele de simulare din Figura \ref{fig:input_sim}.
 
 \begin{figure}[ht]
     \centering
-    % Placeholder pentru figura exportată din KiCad
-    \fbox{\begin{minipage}{0.8\textwidth}
-        \centering
-        \vspace{2cm}
-        [Schema Electronică: Interfața de Intrare - KiCad]
-        \vspace{2cm}
-    \end{minipage}}
+    \includegraphics[width=0.9\textwidth]{figuri/schema_hardware.pdf}
     \caption{Schema electronică a interfeței de intrare hibride.}
     \label{fig:input_sch}
 \end{figure}
 
-\subsection{Managementul nivelului de semnal și câștigul selectabil}
-Adaptarea între standardele de nivel $+4\text{ dBu}$ și $-10\text{ dBV}$ este realizată prin modificarea rețelei de reacție negativă a amplificatorului diferențial. Comutatorul \textbf{SW1} activează o rezistență de șuntare, crescând câștigul etajului cu $11.8\text{ dB}$ pentru semnalele de nivel scăzut. Această procedură garantează că procesorul digital de semnal \textbf{ADAU1701} operează întotdeauna într-o zonă optimă a gamei dinamice, menținând o rezervă de gardă de $6\text{ dB}$ față de pragul de saturație digitală.
+\subsection{Managementul nivelului de semnal și strategia de \textit{headroom}}
+O provocare majoră în integrarea sistemelor analogice cu cele digitale este alinierea standardelor de nivel audio. Intrările sunt proiectate să acomodeze atât standardul profesional de studio ($+4\text{ dBu} \approx 1.228\text{ V}_{rms}$), cât și standardul de consumator ($-10\text{ dBV} \approx 0.316\text{ V}_{rms}$). Diferența de amplitudine între cele două standarde necesită compensare prin amplificare pentru a folosi la maximum gama dinamică a convertorului analog-digital.
 
-Performanța acestui etaj a fost validată prin simulări SPICE, urmărind în special liniaritatea răspunsului în frecvență și eficiența rejecției modului comun, rezultatele fiind ilustrate în Figura \ref{fig:input_sim}.
+Diferența de câștig necesară se calculează astfel:
+
+\begin{equation}
+    \Delta G = 20 \log_{10} \left( \frac{1.228\text{ V}_{rms}}{0.316\text{ V}_{rms}} \right) \approx 11.79\text{ dB}
+\end{equation}
+
+Prin intermediul comutatorului hardware \textbf{SW1}, în bucla de reacție a amplificatorului diferențial este introdusă o rezistență paralelă calculată pentru a genera un câștig suplimentar de $+11.8\text{ dB}$.
+
+Această arhitectură a fost concepută având în vedere caracteristicile integratului \textbf{ADAU1701}. ADC-ul intern necesită $2\text{ V}_{rms}$ pentru a atinge pragul \textit{full-scale} ($0\text{ dBFS}$). Prin setarea câștigului etajului analogic pentru a furniza o tensiune nominală de aproximativ $1\text{ V}_{rms}$ la intrarea procesorului DSP, se obține o marjă teoretică de siguranță (\textit{headroom}) de exact $6\text{ dB}$:
+
+\begin{equation}
+    \text{Headroom} = 20 \log_{10} \left( \frac{2\text{ V}_{rms}}{1\text{ V}_{rms}} \right) \approx 6.02\text{ dB}
+\end{equation}
+
+Această strategie de management al semnalului previne saturația digitală (\textit{clipping}) în momentele cu vârfuri tranzitorii excepționale sau în situațiile în care algoritmii de prelucrare a semnalului (DSP), precum egalizarea parametrică, aplică o amplificare localizată (boost) a anumitor benzi de frecvență. Datele de simulare confirmă stabilitatea acestui etaj de câștig pentru ambele moduri de operare.
 
 \begin{figure}[ht]
     \centering
-    % Placeholder pentru rezultatele simulării
-    \fbox{\begin{minipage}{0.8\textwidth}
+    \begin{minipage}{0.48\textwidth}
         \centering
-        \vspace{2cm}
-        [Rezultate Simulări: CMRR și Răspuns în Frecvență]
-        \vspace{2cm}
-    \end{minipage}}
-    \caption{Analiza performanțelor interfeței de intrare prin simulare numerică.}
+        \includegraphics[width=\textwidth]{figuri/freq_resp_input.pdf}
+    \end{minipage}\hfill
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figuri/cmrr_tolerance.pdf}
+    \end{minipage}
+    \caption{Analiza performanțelor interfeței de intrare prin simulare numerică. (Stânga) Răspunsul plat în banda audio pentru diferite moduri de operare. (Dreapta) Eficiența rejecției modului comun în funcție de toleranța rezistențelor.}
     \label{fig:input_sim}
 \end{figure}
 
-\subsection{Interfața de ieșire de linie}
-Ieșirile de linie echilibrate sunt proiectate pentru a asigura o transmisie de joasă impedanță, capabilă să conducă sarcini capacitive reprezentate de cabluri lungi. Etajul bufferat minimizează diafonia între canale și previne interacțiunea dintre procesorul de semnal și echipamentele externe conectate.
+\subsection{Interfața de ieșire de linie: Topologia Impedance Balanced}
+Pentru etajul de ieșire de linie, s-a optat pentru topologia \textit{Impedance Balanced} (cunoscută și sub denumirea de pseudo-echilibrată), o soluție arhitecturală susținută de fundamentul teoretic elaborat în literatura de specialitate \cite[Capitolul \textit{Line Outputs}]{douglasself}. Spre deosebire de o ieșire complet echilibrată (activă) care utilizează două amplificatoare operaționale pentru a conduce ambele ramuri ale semnalului în antifază, topologia \textit{Impedance Balanced} folosește un singur amplificator operațional pentru a conduce ramura pozitivă (Hot), în timp ce ramura negativă (Cold) este conectată la masă printr-o rețea pasivă cu o impedanță identică cu cea a ramurii active.
+
+Această abordare se bazează pe principiul fundamental conform căruia imunitatea la zgomot (CMRR) a unei conexiuni echilibrate nu este determinată de simetria tensiunilor de pe cele două fire, ci exclusiv de simetria impedanțelor văzute de receptor pe cele două linii. Astfel, prin egalarea riguroasă a impedanței de ieșire a ramurii Hot ($Z_{out+}$) cu impedanța ramurii Cold ($Z_{out-}$), orice zgomot indus pe cablu va fi cuplat în mod egal pe ambele fire și respins de receptorul diferențial:
+
+\begin{equation}
+    Z_{out+} = Z_{out-} = 100\text{ }\Omega
+\end{equation}
+
+Această valoare de $100\text{ }\Omega$ servește un rol dublu: egalează impedanțele liniilor și izolează ieșirea amplificatorului operațional de capacitatea parazită a cablurilor lungi, prevenind oscilațiile de înaltă frecvență. Simplitatea acestei topologii reduce numărul de componente active, minimizând zgomotul termic adăugat și diafonia între canale, prevenind totodată interacțiunea dintre procesorul de semnal și echipamentele externe conectate. Analiza simulărilor atestă eficacitatea acestei topologii.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.7\textwidth]{figuri/freq_resp_output.pdf}
+    \caption{Răspunsul în frecvență și faza pentru etajul de ieșire Impedance Balanced.}
+    \label{fig:output_sim}
+\end{figure}
 
 \section{Procesarea Digitală a Semnalului (DSP)}
 Nucleul sistemului este procesorul \textbf{ADAU1701} \cite{adau1701}, care funcționează la o frecvență de eșantionare de $48\text{ kHz}$, sincronizat de un oscilator cu cristal de $12.288\text{ MHz}$.
