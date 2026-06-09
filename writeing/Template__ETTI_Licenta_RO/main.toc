@@ -20,24 +20,30 @@
 \contentsline {subsection}{\numberline {1.2.2}Convertoare Delta-Sigma ($\Delta \Sigma $)}{8}{subsection.1.2.2}%
 \contentsline {section}{\numberline {1.3}Amplificarea în Clasa D}{9}{section.1.3}%
 \contentsline {chapter}{\numberline {2}Proiectarea Arhitecturii Hardware }{10}{chapter.2}%
-\contentsline {section}{\numberline {2.1}Interfața audio de linie: Arhitectura hibridă}{11}{section.2.1}%
-\contentsline {subsection}{\numberline {2.1.1}Proiectarea etajului de intrare universal}{11}{subsection.2.1.1}%
-\contentsline {subsection}{\numberline {2.1.2}Filtrarea și condiționarea semnalului}{11}{subsection.2.1.2}%
-\contentsline {subsection}{\numberline {2.1.3}Managementul nivelului de semnal și strategia de \textit {headroom}}{12}{subsection.2.1.3}%
-\contentsline {subsection}{\numberline {2.1.4}Interfața de ieșire de linie: Topologia Impedance Balanced}{12}{subsection.2.1.4}%
-\contentsline {section}{\numberline {2.2}Procesarea Digitală a Semnalului (DSP)}{13}{section.2.2}%
-\contentsline {subsection}{\numberline {2.2.1}Condiționarea intrărilor ADC}{13}{subsection.2.2.1}%
-\contentsline {section}{\numberline {2.3}Etajele de putere în clasa D}{13}{section.2.3}%
-\contentsline {section}{\numberline {2.4}Sistemul de alimentare și masa virtuală}{13}{section.2.4}%
-\contentsline {chapter}{\numberline {3}Implementarea Practică a Sistemului pe Perfboard }{17}{chapter.3}%
-\contentsline {section}{\numberline {3.1}Strategia de layout și asamblare}{17}{section.3.1}%
-\contentsline {section}{\numberline {3.2}Realizarea modulelor individuale}{17}{section.3.2}%
-\contentsline {section}{\numberline {3.3}Probleme întâmpinate la implementare}{17}{section.3.3}%
-\contentsline {chapter}{\numberline {4}Testarea Sistemului și Analiza Performanțelor }{18}{chapter.4}%
-\contentsline {section}{\numberline {4.1}Setup-ul de testare}{18}{section.4.1}%
-\contentsline {section}{\numberline {4.2}Măsurători experimentale}{18}{section.4.2}%
-\contentsline {section}{\numberline {4.3}Validarea funcționării programatorului și a algoritmilor DSP}{18}{section.4.3}%
-\contentsline {section}{\numberline {4.4}Concluzii și direcții viitoare}{18}{section.4.4}%
-\contentsline {unnumberedsection}{Referințe bibliografice}{19}{chapter*.9}%
-\contentsline {chapter}{\appnumberline {A}Rezolvare ''Cinci Pâini''}{20}{appendix.A}%
-\contentsline {chapter}{\appnumberline {B}Alte povești și basme}{21}{appendix.B}%
+\contentsline {section}{\numberline {2.1}Sistemul de alimentare și masa virtuală}{11}{section.2.1}%
+\contentsline {subsection}{\numberline {2.1.1}Conceptul de translație a referinței}{11}{subsection.2.1.1}%
+\contentsline {subsection}{\numberline {2.1.2}Implementarea și limitările etajului de alimentare}{11}{subsection.2.1.2}%
+\contentsline {subsubsection}{\numberline {2.1.2.1}Izolarea DC și cuplajul capacitiv}{12}{subsubsection.2.1.2.1}%
+\contentsline {subsubsection}{\numberline {2.1.2.2}Managementul dinamicii semnalului (\textit {Headroom})}{12}{subsubsection.2.1.2.2}%
+\contentsline {section}{\numberline {2.2}Interfața audio de linie: Arhitectura hibridă}{12}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}Proiectarea etajului de intrare universal}{12}{subsection.2.2.1}%
+\contentsline {subsection}{\numberline {2.2.2}Filtrarea și condiționarea semnalului}{13}{subsection.2.2.2}%
+\contentsline {subsection}{\numberline {2.2.3}Managementul nivelului de semnal și strategia de \textit {headroom}}{13}{subsection.2.2.3}%
+\contentsline {subsection}{\numberline {2.2.4}Interfața de ieșire de linie: Topologia Impedance Balanced}{14}{subsection.2.2.4}%
+\contentsline {section}{\numberline {2.3}Integrarea Modulelor Comerciale (COTS)}{14}{section.2.3}%
+\contentsline {subsection}{\numberline {2.3.1}Procesarea Digitală a Semnalului (DSP)}{14}{subsection.2.3.1}%
+\contentsline {subsubsection}{\numberline {2.3.1.1}Condiționarea intrărilor ADC}{15}{subsubsection.2.3.1.1}%
+\contentsline {subsection}{\numberline {2.3.2}Etajele de putere în clasa D}{15}{subsection.2.3.2}%
+\contentsline {subsection}{\numberline {2.3.3}Programatorul DSP și Interfața de Control}{15}{subsection.2.3.3}%
+\contentsline {chapter}{\numberline {3}Implementarea Practică a Sistemului pe Perfboard }{18}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Strategia de layout și asamblare}{18}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Realizarea modulelor individuale}{18}{section.3.2}%
+\contentsline {section}{\numberline {3.3}Probleme întâmpinate la implementare}{18}{section.3.3}%
+\contentsline {chapter}{\numberline {4}Testarea Sistemului și Analiza Performanțelor }{19}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Setup-ul de testare}{19}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Măsurători experimentale}{19}{section.4.2}%
+\contentsline {section}{\numberline {4.3}Validarea funcționării programatorului și a algoritmilor DSP}{19}{section.4.3}%
+\contentsline {section}{\numberline {4.4}Concluzii și direcții viitoare}{19}{section.4.4}%
+\contentsline {unnumberedsection}{Referințe bibliografice}{20}{chapter*.9}%
+\contentsline {chapter}{\appnumberline {A}Rezolvare ''Cinci Pâini''}{21}{appendix.A}%
+\contentsline {chapter}{\appnumberline {B}Alte povești și basme}{22}{appendix.B}%

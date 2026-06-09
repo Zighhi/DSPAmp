@@ -6,6 +6,7 @@
 \contentsline {figure}{\numberline {1.5}{\ignorespaces Degradarea teoretică a parametrului CMRR în funcție de toleranța componentelor pasive}}{7}{figure.1.5}%
 \contentsline {figure}{\numberline {1.6}{\ignorespaces Procesul de eșantionare și cuantizare}}{8}{figure.1.6}%
 \contentsline {figure}{\numberline {2.1}{\ignorespaces Diagrama bloc funcțională a sistemului.}}{10}{figure.2.1}%
-\contentsline {figure}{\numberline {2.2}{\ignorespaces Schema electronică a interfeței de intrare hibride.}}{15}{figure.2.2}%
-\contentsline {figure}{\numberline {2.3}{\ignorespaces Analiza performanțelor interfeței de intrare prin simulare numerică. (Stânga) Răspunsul plat în banda audio pentru diferite moduri de operare. (Dreapta) Eficiența rejecției modului comun în funcție de toleranța rezistențelor.}}{16}{figure.2.3}%
-\contentsline {figure}{\numberline {2.4}{\ignorespaces Răspunsul în frecvență și faza pentru etajul de ieșire Impedance Balanced.}}{16}{figure.2.4}%
+\contentsline {figure}{\numberline {2.2}{\ignorespaces Reprezentarea conceptuală a masei virtuale și a translației nivelurilor de tensiune.}}{11}{figure.2.2}%
+\contentsline {figure}{\numberline {2.3}{\ignorespaces Schema electronică a interfeței de intrare hibride.}}{16}{figure.2.3}%
+\contentsline {figure}{\numberline {2.4}{\ignorespaces Analiza performanțelor interfeței de intrare prin simulare numerică. (Stânga) Răspunsul plat în banda audio pentru diferite moduri de operare. (Dreapta) Eficiența rejecției modului comun în funcție de toleranța rezistențelor.}}{17}{figure.2.4}%
+\contentsline {figure}{\numberline {2.5}{\ignorespaces Răspunsul în frecvență și faza pentru etajul de ieșire Impedance Balanced.}}{17}{figure.2.5}%

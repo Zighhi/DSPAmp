@@ -104,12 +104,95 @@ Acest capitol detaliază arhitectura hardware a amplificatorului audio multicana
 
 Pentru a eficientiza dezvoltarea, anumite funcții complexe au fost implementate utilizând module pre-asamblate. Astfel, designul a trebuit să acomodeze și să interconecteze corect procesorul digital de semnal, amplificatoarele de putere în clasa D și programatorul hardware al DSP-ului. Designul rezulta este prezentat în Figura \ref{fig:block_diagram_sys}.
 
+\section{Sistemul de alimentare și masa virtuală}
+Alimentarea circuitelor analogice se realizează de la o sursă unipolară de $12\text{ V}$. Deoarece semnalele audio sunt în esență bipolare (oscilează în jurul unei referințe de $0\text{ V}$), utilizarea unei singure surse de alimentare ar duce la tăierea semialternanțelor negative. Pentru a permite operarea amplificatoarelor operaționale în regim dual fără a utiliza o sursă de alimentare simetrică complexă, s-a implementat un circuit de \textbf{masă virtuală} ($V_{GND} = V_{cc}/2 = 6\text{ V}$).
+
+\subsection{Conceptul de translație a referinței}
+Conceptul de masă virtuală presupune crearea unui punct stabil de potențial intermediar care servește drept referință pentru toate etajele analogice. Din perspectiva semnalului audio, acest punct de $6\text{ V}$ este tratat ca un "$0\text{ V}$ logic". Astfel, sistemul unipolar de $0\dots12\text{ V}$ este re-interpretat ca un sistem virtual bipolar de $\pm 6\text{ V}$:
+\begin{itemize}
+    \item Terminalul de $+12\text{ V}$ devine $+6\text{ V}$ relativ la masa virtuală;
+    \item Masa virtuală ($6\text{ V}$) devine referința de $0\text{ V}$;
+    \item Terminalul de $0\text{ V}$ (GND real) devine $-6\text{ V}$ relativ la masa virtuală.
+\end{itemize}
+
+Această translație este ilustrată în Figura \ref{fig:virtual_ground_concept}.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}[>=stealth, thick, font=\small\sffamily]
+        % Potential Scale (Axis)
+        \draw[->] (0,-0.5) -- (0,5.5) node[above left, rotate=90] {Potențial [V]};
+        
+        % Physical Voltage Levels (Horizontal Lines)
+        \draw[red!80!black] (-0.2,4) -- (5,4) node[right, font=\scriptsize] {Rail Pozitiv (Vcc)};
+        \node[red!80!black, left] at (-0.3,4) {12 V};
+        
+        \draw[blue!80!black, dashed] (-0.2,2) -- (5,2) node[right, font=\scriptsize] {Masă Virtuală (VGND)};
+        \node[blue!80!black, left] at (-0.3,2) {6 V};
+        
+        \draw[black] (-0.2,0) -- (5,0) node[right, font=\scriptsize] {Masă Reală (GND)};
+        \node[black, left] at (-0.3,0) {0 V};
+
+        % Virtual Bipolar Labels (Right side braces/arrows)
+        \draw[<->, red!70!black] (5.5, 2.1) -- (5.5, 3.9) node[midway, right] {+6 V (Virtual)};
+        \draw[<->, black!70] (5.5, 0.1) -- (5.5, 1.9) node[midway, right] {-6 V (Virtual)};
+        \node[blue!70!black, right] at (5.5, 2) {0 V (Ref)};
+        
+        % Waveform
+        \draw[blue!60, smooth, samples=100, domain=0.5:4.5] plot (\x, {2 + 0.8*sin(\x*150)});
+        \node[blue!80!black, font=\scriptsize, fill=white, inner sep=1pt] at (2.5, 3.2) {Semnal audio oscilând în jurul referinței de 6V};
+
+        % Legend/Title
+        \node[below=0.8cm, font=\itshape] at (2.5, 0) {Corelația între nivelurile fizice (unipolare) și cele virtuale (bipolare)};
+    \end{tikzpicture}
+    \caption{Reprezentarea conceptuală a masei virtuale și a translației nivelurilor de tensiune.}
+    \label{fig:virtual_ground_concept}
+\end{figure}
+
+\subsection{Implementarea hardware a masei virtuale}
+Circuitul utilizat pentru generarea referinței este prezentat în Figura \ref{fig:vgnd_sch}. Acesta utilizează un divizor de tensiune rezistiv de înaltă impedanță ($R_1 = R_2 = 100\text{ k}\Omega$) pentru a minimiza consumul static din sursa de alimentare. Punctul de mijloc al divizorului este bufferat de un amplificator operațional \textbf{TL072} configurat ca repetor de tensiune.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}[american, thick]
+        % Op-amp
+        \node[op amp] (oa) at (3,0) {};
+        
+        % Input Divider
+        \draw (0,2) node[above] {12 V} to[R, l=$R_1(100k)$] (0,0) 
+              to[R, l=$R_2(100k)$] (0,-2) node[ground] {};
+        
+        \draw (0,0) to[short, *-] (oa.+);
+        
+        % Feedback
+        \draw (oa.out) to[short, -*] (4.5,0) node[right] {VGND (6V)};
+        \draw (4,0) to[short, *-] (4,1.5) to (1.2,1.5) to (1.2,0.5) to (oa.-);
+        
+        % Decoupling
+        \draw (4,0) to[C, l=$C(10\mu F)$, -*] (4,-2) node[ground] {};
+        
+        % Power for Op-amp
+        \draw (oa.up) to[short, -] (3,1) node[above] {12 V};
+        \draw (oa.down) to[short, -] (3,-1) node[ground] {};
+    \end{tikzpicture}
+    \caption{Schema electronică a generatorului de masă virtuală.}
+    \label{fig:vgnd_sch}
+\end{figure}
+
+Buffer-ul este esențial pentru a asigura o impedanță de ieșire scăzută. Deși sursa de 12V este stabilă, masa virtuală trebuie să rămână imună la variațiile de curent absorbite de etajele audio. Dacă impedanța masei virtuale ar fi ridicată, semnalele de pe un canal s-ar regăsi pe referința de 6V și s-ar propaga pe celelalte canale, ducând la diafonie (crosstalk). Utilizarea condensatorului de $10\text{ }\mu\text{F}$ la ieșire asigură o rezervă locală de curent pentru tranzitorii rapide, menținând referința stabilă.
+
 \section{Interfața audio de linie: Arhitectura hibridă}
 Implementarea etajului de intrare a urmat o abordare hibridă, vizând integrarea funcționalității pentru semnale echilibrate și neechilibrate într-o structură hardware unificată. Această metodologie de proiectare se bazează pe configurațiile fundamentale descrise de Douglas Self \cite{douglasself}, adaptate cerințelor specifice de nivel și impedanță ale sistemului multicanal.
 
 \subsection{Proiectarea etajului de intrare universal}
 Nucleul interfeței este constituit dintr-un amplificator diferențial realizat cu amplificatorul operațional \textbf{OPA2134}. Această componentă a fost selectată datorită intrărilor cu tranzistori FET, care oferă un curent de polarizare extrem de scăzut și o densitate a zgomotului de tensiune de doar $8\text{ nV}/\sqrt{\text{Hz}}$, performanțe esențiale pentru menținerea integrității semnalului audio de mică amplitudine. Alegerea acestei topologii permite utilizarea unei căi de semnal comune pentru ambele tipuri de conexiuni. În cazul unui semnal echilibrat, circuitul procesează diferența dintre ramurile pozitivă și negativă. Pentru semnalele neechilibrate, ramura negativă a conectorului este legată la masă, circuitul funcționând ca un buffer ne-inversor.
 
+\subsubsection{Izolarea DC și managementul dinamicii (\textit{Headroom})}
+O consecință directă a utilizării masei virtuale este prezența unei componente continue de $6\text{ V}$ pe toată calea de semnal analogică. Pentru a preveni propagarea acestei tensiuni către echipamentele externe sau către ADC, este imperativă utilizarea condensatoarelor de cuplaj (DC blocking) la toate punctele de intrare și ieșire ale sistemului (ex. $C_1, C_2$ din Figura \ref{fig:input_sch}). Acestea au rolul de a "bloca" componenta de $6\text{ V}$, permițând doar trecerea semnalului audio alternativ, referențiindu-l înapoi la masa reală de $0\text{ V}$ in afara etajelor de procesare.
+
+De asemenea, arhitectura amplificatoarelor operaționale impune limite asupra dinamicii semnalului. Atât TL072 cât și OPA2134 nu sunt de tip \textit{rail-to-rail}, ceea ce înseamnă că semnalul trebuie menținut într-un interval cu aproximativ $1.5\text{--}2\text{ V}$ sub pragul surselor ($2\dots10\text{ V}$). Acest aspect limitează amplitudinea maximă a semnalului audio la aproximativ $4\text{ V}_{peak}$, valoare care a fost luată în considerare la calculul câștigului pentru a evita distorsiunile prin tăiere (clipping) analogic.
+
+\subsection{Analiza impedanțelor și rejecția modului comun}
 Această configurație, deși optimă din punctul de vedere al numărului de componente, prezintă un dezechilibru intrinsec al impedanțelor de intrare. Acest aspect este analizat riguros în literatura de specialitate, în special în documentația de referință privind proiectarea intrărilor de linie \cite[Capitolul \textit{Line Inputs}]{douglasself}. Într-o configurație clasică cu un singur amplificator operațional (conform topologiei din Figura \ref{fig:input_sch}), impedanța văzută de ramura ne-inversoare ($Z_{in+}$) este determinată de suma rezistențelor din divizor, în timp ce ramura inversoare prezintă o impedanță ($Z_{in-}$) mai mică, deoarece intrarea inversoare a amplificatorului operațional reprezintă un nod de masă virtuală. Matematic, pentru sistemul nostru:
 
 \begin{equation}
@@ -179,7 +262,7 @@ Această strategie de management al semnalului previne saturația digitală (\te
 \end{figure}
 
 \subsection{Interfața de ieșire de linie: Topologia Impedance Balanced}
-Pentru etajul de ieșire de linie, s-a optat pentru topologia \textit{Impedance Balanced} (cunoscută și sub denumirea de pseudo-echilibrată), o soluție arhitecturală susținută de fundamentul teoretic elaborat în literatura de specialitate \cite[Capitolul \textit{Line Outputs}]{douglasself}. Spre deosebire de o ieșire complet echilibrată (activă) care utilizează două amplificatoare operaționale pentru a conduce ambele ramuri ale semnalului în antifază, topologia \textit{Impedance Balanced} folosește un singur amplificator operațional pentru a conduce ramura pozitivă (Hot), în timp ce ramura negativă (Cold) este conectată la masă printr-o rețea pasivă cu o impedanță identică cu cea a ramurii active.
+Pentru etajul de ieșire de linie, s-a optat pentru topologia \textit{Impedance Balanced} (cunoscută și sub denumirea de pseudo-echilibrată), o soluție arhitecturală susținută de fundamentul teoretic elaborat în literatura de specialitate \cite[Capitolul \textit{Line Outputs}]{douglasself}. Spre deosebire de o ieșire complet echilibrată (activă) care utilizează două amplificatoare operaționale pentru a conduce ambele ramuri ale semnalului in antifază, topologia \textit{Impedance Balanced} folosește un singur amplificator operațional pentru a conduce ramura pozitivă (Hot), în timp ce ramura negativă (Cold) este conectată la masă printr-o rețea pasivă cu o impedanță identică cu cea a ramurii active.
 
 Această abordare se bazează pe principiul fundamental conform căruia imunitatea la zgomot (CMRR) a unei conexiuni echilibrate nu este determinată de simetria tensiunilor de pe cele două fire, ci exclusiv de simetria impedanțelor văzute de receptor pe cele două linii. Astfel, prin egalarea riguroasă a impedanței de ieșire a ramurii Hot ($Z_{out+}$) cu impedanța ramurii Cold ($Z_{out-}$), orice zgomot indus pe cablu va fi cuplat în mod egal pe ambele fire și respins de receptorul diferențial:
 
@@ -196,18 +279,19 @@ Această valoare de $100\text{ }\Omega$ servește un rol dublu: egalează impeda
     \label{fig:output_sim}
 \end{figure}
 
-\section{Procesarea Digitală a Semnalului (DSP)}
+\section{Integrarea Modulelor Comerciale (COTS)}
+Această secțiune descrie modul în care subsistemele complexe, realizate sub formă de module pre-asamblate, sunt integrate în arhitectura globală a amplificatorului.
+
+\subsection{Procesarea Digitală a Semnalului (DSP)}
 Nucleul sistemului este procesorul \textbf{ADAU1701} \cite{adau1701}, care funcționează la o frecvență de eșantionare de $48\text{ kHz}$, sincronizat de un oscilator cu cristal de $12.288\text{ MHz}$.
 
-\subsection{Condiționarea intrărilor ADC}
-ADC-urile integrate în ADAU1701 necesită un semnal de intrare în curent. Pentru a converti tensiunea analogică în curent, s-au utilizat rezistențe serie de \textbf{$18\text{ k}\Omega$} (R33, R36 etc.), care împreună cu rezistența internă de $2\text{ k}\Omega$ totalizează $20\text{ k}\Omega$. Această valoare setează nivelul de \textit{full-scale} la $2\text{ V}_{rms}$.
+\subsubsection{Condiționarea intrărilor ADC}
+ADC-urile integrate în ADAU1701 necesită un semnal de intrare in curent. Pentru a converti tensiunea analogică în curent, s-au utilizat rezistențe serie de \textbf{$18\text{ k}\Omega$} (R33, R36 etc.), care împreună cu rezistența internă de $2\text{ k}\Omega$ totalizează $20\text{ k}\Omega$. Această valoare setează nivelul de \textit{full-scale} la $2\text{ V}_{rms}$.
 
 Utilizarea condensatoarelor de cuplaj de \textbf{$47\text{ }\mu\text{F}$} stabilește o frecvență de tăiere inferioară extrem de joasă, asigurând o fază liniară în sub-bas. Nivelul nominal de operare a fost calculat pentru a menține un \textit{headroom} digital de $6\text{ dB}$, prevenind distorsiunile de tip \textit{clipping} în timpul procesării algoritmilor de egalizare sau filtrare.
 
-\section{Etajele de putere în clasa D}
+\subsection{Etajele de putere în clasa D}
 Pentru amplificarea finală a semnalului către difuzoare, s-au utilizat module de putere bazate pe circuitul integrat \textbf{TPA3118}. Acestea funcționează în modul de modulație prin lățimea pulsurilor (PWM), oferind o eficiență de peste $90\%$, ceea ce elimină necesitatea unor radiatoare voluminoase. Modulele sunt configurate pentru a furniza o putere nominală de $15\text{ W}$ pe canal la o sarcină de $8\text{ }\Omega$, utilizând tensiunea de alimentare de $12\text{ V}$.
 
-\section{Sistemul de alimentare și masa virtuală}
-Alimentarea circuitelor analogice se realizează de la o sursă unipolară de $12\text{ V}$. Pentru a permite operarea amplificatoarelor operaționale în regim dual, s-a implementat un circuit de \textbf{masă virtuală} ($V_{cc}/2 = 6\text{ V}$).
-
-Acesta este compus dintr-un divizor de tensiune rezistiv de înaltă impedanță ($100\text{ k}\Omega / 100\text{ k}\Omega$), bufferat de o secțiune a amplificatorului operațional \textbf{TL072}. Decuplarea masei virtuale se realizează cu condensatoare de $10\text{ }\mu\text{F}$, asigurând o referință stabilă și imună la zgomotul generat de etajele digitale și de putere.
+\subsection{Programatorul DSP și Interfața de Control}
+Text în lucru...
