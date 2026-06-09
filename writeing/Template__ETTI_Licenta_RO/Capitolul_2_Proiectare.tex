@@ -108,78 +108,62 @@ Pentru a eficientiza dezvoltarea, anumite funcții complexe au fost implementate
 Alimentarea circuitelor analogice se realizează de la o sursă unipolară de $12\text{ V}$. Deoarece semnalele audio sunt în esență bipolare (oscilează în jurul unei referințe de $0\text{ V}$), utilizarea unei singure surse de alimentare ar duce la tăierea semialternanțelor negative. Pentru a permite operarea amplificatoarelor operaționale în regim dual fără a utiliza o sursă de alimentare simetrică complexă, s-a implementat un circuit de \textbf{masă virtuală} ($V_{GND} = V_{cc}/2 = 6\text{ V}$).
 
 \subsection{Conceptul de translație a referinței}
-Conceptul de masă virtuală presupune crearea unui punct stabil de potențial intermediar care servește drept referință pentru toate etajele analogice. Din perspectiva semnalului audio, acest punct de $6\text{ V}$ este tratat ca un "$0\text{ V}$ logic". Astfel, sistemul unipolar de $0\dots12\text{ V}$ este re-interpretat ca un sistem virtual bipolar de $\pm 6\text{ V}$:
+Conceptul de masă virtuală presupune crearea unui punct stabil de potențial intermediar care servește drept referință pentru toate etajele analogice. Din perspectiva semnalului audio, acest punct de $6\text{ V}$ este tratat ca un "$0\text{ V}$ logic". Astfel, sistemul unipolar de $0 - 12\text{ V}$ este re-interpretat ca un sistem virtual bipolar de $\pm 6\text{ V}$:
 \begin{itemize}
-    \item Terminalul de $+12\text{ V}$ devine $+6\text{ V}$ relativ la masa virtuală;
+    \item Potentialul de $+12\text{ V}$ devine $+6\text{ V}$ relativ la masa virtuală;
     \item Masa virtuală ($6\text{ V}$) devine referința de $0\text{ V}$;
-    \item Terminalul de $0\text{ V}$ (GND real) devine $-6\text{ V}$ relativ la masa virtuală.
+    \item Potentialul de $0\text{ V}$ (GND real) devine $-6\text{ V}$ relativ la masa virtuală.
 \end{itemize}
 
 Această translație este ilustrată în Figura \ref{fig:virtual_ground_concept}.
 
 \begin{figure}[htbp]
     \centering
-    \begin{tikzpicture}[>=stealth, thick, font=\small\sffamily]
-        % Potential Scale (Axis)
-        \draw[->] (0,-0.5) -- (0,5.5) node[above left, rotate=90] {Potențial [V]};
-        
-        % Physical Voltage Levels (Horizontal Lines)
-        \draw[red!80!black] (-0.2,4) -- (5,4) node[right, font=\scriptsize] {Rail Pozitiv (Vcc)};
-        \node[red!80!black, left] at (-0.3,4) {12 V};
-        
-        \draw[blue!80!black, dashed] (-0.2,2) -- (5,2) node[right, font=\scriptsize] {Masă Virtuală (VGND)};
-        \node[blue!80!black, left] at (-0.3,2) {6 V};
-        
-        \draw[black] (-0.2,0) -- (5,0) node[right, font=\scriptsize] {Masă Reală (GND)};
-        \node[black, left] at (-0.3,0) {0 V};
-
-        % Virtual Bipolar Labels (Right side braces/arrows)
-        \draw[<->, red!70!black] (5.5, 2.1) -- (5.5, 3.9) node[midway, right] {+6 V (Virtual)};
-        \draw[<->, black!70] (5.5, 0.1) -- (5.5, 1.9) node[midway, right] {-6 V (Virtual)};
-        \node[blue!70!black, right] at (5.5, 2) {0 V (Ref)};
-        
-        % Waveform
-        \draw[blue!60, smooth, samples=100, domain=0.5:4.5] plot (\x, {2 + 0.8*sin(\x*150)});
-        \node[blue!80!black, font=\scriptsize, fill=white, inner sep=1pt] at (2.5, 3.2) {Semnal audio oscilând în jurul referinței de 6V};
-
-        % Legend/Title
-        \node[below=0.8cm, font=\itshape] at (2.5, 0) {Corelația între nivelurile fizice (unipolare) și cele virtuale (bipolare)};
-    \end{tikzpicture}
+    \includegraphics[width=0.9\textwidth]{figuri/virtual_ground_concept.pdf}
     \caption{Reprezentarea conceptuală a masei virtuale și a translației nivelurilor de tensiune.}
     \label{fig:virtual_ground_concept}
 \end{figure}
 
 \subsection{Implementarea hardware a masei virtuale}
-Circuitul utilizat pentru generarea referinței este prezentat în Figura \ref{fig:vgnd_sch}. Acesta utilizează un divizor de tensiune rezistiv de înaltă impedanță ($R_1 = R_2 = 100\text{ k}\Omega$) pentru a minimiza consumul static din sursa de alimentare. Punctul de mijloc al divizorului este bufferat de un amplificator operațional \textbf{TL072} configurat ca repetor de tensiune.
+Circuitul utilizat pentru generarea referinței este prezentat în Figura \ref{fig:vgnd_sch}. Acesta utilizează un divizor de tensiune rezistiv ($R_1 = R_2 = 100\text{ k}\Omega$) pentru a minimiza consumul din sursa de alimentare. Punctul de mijloc al divizorului este urmat de un buffer cu un amplificator operațional \textbf{TL072} configurat ca repetor de tensiune.
 
 \begin{figure}[htbp]
     \centering
-    \begin{tikzpicture}[american, thick]
-        % Op-amp
-        \node[op amp] (oa) at (3,0) {};
-        
-        % Input Divider
-        \draw (0,2) node[above] {12 V} to[R, l=$R_1(100k)$] (0,0) 
-              to[R, l=$R_2(100k)$] (0,-2) node[ground] {};
-        
-        \draw (0,0) to[short, *-] (oa.+);
-        
-        % Feedback
-        \draw (oa.out) to[short, -*] (4.5,0) node[right] {VGND (6V)};
-        \draw (4,0) to[short, *-] (4,1.5) to (1.2,1.5) to (1.2,0.5) to (oa.-);
-        
-        % Decoupling
-        \draw (4,0) to[C, l=$C(10\mu F)$, -*] (4,-2) node[ground] {};
-        
-        % Power for Op-amp
-        \draw (oa.up) to[short, -] (3,1) node[above] {12 V};
-        \draw (oa.down) to[short, -] (3,-1) node[ground] {};
-    \end{tikzpicture}
-    \caption{Schema electronică a generatorului de masă virtuală.}
+    \begin{circuitikz}[american, thick, scale=1.0]
+        % Power Rail
+        \draw (0,3) node[vcc] {+12V} to[short, -*] (1.5,3) coordinate(p1)
+              to[short, -*] (3.5,3) coordinate(p2)
+              to[short] (5.5,3) coordinate(p3);
+
+        % Input Stage (C1)
+        \draw (1.5,3) to[eC, l=$C_1(100\mu F)$] (1.5,0.5) node[ground] {};
+
+        % Divider Stage (R1, R2, C2)
+        \draw (3.5,3) to[R, l=$R_1(100k)$, -*] (3.5,1.5) coordinate(mid)
+              to[R, l=$R_2(100k)$] (3.5,0.5) node[ground] {};
+        \draw (mid) to[short, -*] (4.5,1.5) coordinate(mid2)
+              to[C, l=$C_2(10\mu F)$] (4.5,0.5) node[ground] {};
+
+        % Buffer Stage (TL072)
+        \node[op amp, anchor=+] (OA) at (7,1.5) {TL072};
+        \draw (mid2) -- (OA.+);
+        \draw (p3) |- (OA.up);
+        \draw (OA.down) -- (7,0.5) node[ground] {};
+
+        % Feedback Loop
+        \draw (OA.out) to[short, -*] (8.5,1.5) coordinate(out);
+        \draw (OA.-) -- (5.5,2.5) -- (8.5,2.5) -- (out);
+
+        % Output Stage (C3)
+        \draw (out) to[short, -*] (9.5,1.5) coordinate(out2)
+              to[eC, l=$C_3(100\mu F)$] (9.5,0.5) node[ground] {};
+        \draw (out2) to[short, -o] (10.5,1.5) node[right] {VGND (6V)};
+    \end{circuitikz}
+    \caption{Schema electronică a sistemului de masă virtuală.}
     \label{fig:vgnd_sch}
 \end{figure}
 
-Buffer-ul este esențial pentru a asigura o impedanță de ieșire scăzută. Deși sursa de 12V este stabilă, masa virtuală trebuie să rămână imună la variațiile de curent absorbite de etajele audio. Dacă impedanța masei virtuale ar fi ridicată, semnalele de pe un canal s-ar regăsi pe referința de 6V și s-ar propaga pe celelalte canale, ducând la diafonie (crosstalk). Utilizarea condensatorului de $10\text{ }\mu\text{F}$ la ieșire asigură o rezervă locală de curent pentru tranzitorii rapide, menținând referința stabilă.
+Buffer-ul este esențial pentru a asigura o impedanță de ieșire scăzută. Condensatorul $C_2$ furnizează o referință curată la intrarea amplificatorului operațional. Condensatorul $C_1$ asigură filtrarea alimentării la intrare, în timp ce condensatorul $C_3$ de la ieșire asigură o rezervă locală de curent, menținând referința de $6\text{ V}$ stabilă chiar și în condiții de sarcină dinamică.
 
 \section{Interfața audio de linie: Arhitectura hibridă}
 Implementarea etajului de intrare a urmat o abordare hibridă, vizând integrarea funcționalității pentru semnale echilibrate și neechilibrate într-o structură hardware unificată. Această metodologie de proiectare se bazează pe configurațiile fundamentale descrise de Douglas Self \cite{douglasself}, adaptate cerințelor specifice de nivel și impedanță ale sistemului multicanal.
@@ -187,10 +171,14 @@ Implementarea etajului de intrare a urmat o abordare hibridă, vizând integrare
 \subsection{Proiectarea etajului de intrare universal}
 Nucleul interfeței este constituit dintr-un amplificator diferențial realizat cu amplificatorul operațional \textbf{OPA2134}. Această componentă a fost selectată datorită intrărilor cu tranzistori FET, care oferă un curent de polarizare extrem de scăzut și o densitate a zgomotului de tensiune de doar $8\text{ nV}/\sqrt{\text{Hz}}$, performanțe esențiale pentru menținerea integrității semnalului audio de mică amplitudine. Alegerea acestei topologii permite utilizarea unei căi de semnal comune pentru ambele tipuri de conexiuni. În cazul unui semnal echilibrat, circuitul procesează diferența dintre ramurile pozitivă și negativă. Pentru semnalele neechilibrate, ramura negativă a conectorului este legată la masă, circuitul funcționând ca un buffer ne-inversor.
 
-\subsubsection{Izolarea DC și managementul dinamicii (\textit{Headroom})}
-O consecință directă a utilizării masei virtuale este prezența unei componente continue de $6\text{ V}$ pe toată calea de semnal analogică. Pentru a preveni propagarea acestei tensiuni către echipamentele externe sau către ADC, este imperativă utilizarea condensatoarelor de cuplaj (DC blocking) la toate punctele de intrare și ieșire ale sistemului (ex. $C_1, C_2$ din Figura \ref{fig:input_sch}). Acestea au rolul de a "bloca" componenta de $6\text{ V}$, permițând doar trecerea semnalului audio alternativ, referențiindu-l înapoi la masa reală de $0\text{ V}$ in afara etajelor de procesare.
+\subsection{Gestionarea componentei continue și a dinamicii}
+O consecință directă a utilizării masei virtuale este necesitatea unei gestionări riguroase a cuplajului între etaje și a limitelor de excursie a semnalului. Aceste aspecte sunt fundamentale pentru funcționarea corectă a întregii căi audio analogice.
 
-De asemenea, arhitectura amplificatoarelor operaționale impune limite asupra dinamicii semnalului. Atât TL072 cât și OPA2134 nu sunt de tip \textit{rail-to-rail}, ceea ce înseamnă că semnalul trebuie menținut într-un interval cu aproximativ $1.5\text{--}2\text{ V}$ sub pragul surselor ($2\dots10\text{ V}$). Acest aspect limitează amplitudinea maximă a semnalului audio la aproximativ $4\text{ V}_{peak}$, valoare care a fost luată în considerare la calculul câștigului pentru a evita distorsiunile prin tăiere (clipping) analogic.
+\subsubsection{Izolarea DC și cuplajul capacitiv}
+Deoarece toată calea de semnal este referențiată la $6\text{ V}$, este imperativă utilizarea condensatoarelor de cuplaj (DC blocking) la toate punctele de intrare și ieșire ale sistemului (ex. $C_1, C_2$ din Figura \ref{fig:input_sch}). Acestea au rolul de a "bloca" componenta continuă, permițând doar trecerea semnalului audio alternativ și referențiindu-l înapoi la masa reală de $0\text{ V}$ în afara etajelor de procesare. Izolarea este realizată folosind condensatoare electrolitice non-polarizate de $47\text{ }\mu\text{F}$, care asigură o frecvență de tăiere inferioară sub $1\text{ Hz}$.
+
+\subsubsection{Managementul dinamicii semnalului (\textit{Headroom})}
+Arhitectura amplificatoarelor operaționale impune limite asupra dinamicii semnalului. Atât TL072 cât și OPA2134 nu sunt de tip \textit{rail-to-rail}, ceea ce înseamnă că semnalul trebuie menținut într-un interval cu aproximativ $1.5\text{--}2\text{ V}$ sub pragul surselor ($2\dots10\text{ V}$). Acest aspect limitează amplitudinea maximă a semnalului audio la aproximativ $4\text{ V}_{peak}$ ($8\text{ V}_{pp}$), valoare care a fost luată în considerare la calculul câștigului pentru a evita distorsiunile prin tăiere (clipping) analogic.
 
 \subsection{Analiza impedanțelor și rejecția modului comun}
 Această configurație, deși optimă din punctul de vedere al numărului de componente, prezintă un dezechilibru intrinsec al impedanțelor de intrare. Acest aspect este analizat riguros în literatura de specialitate, în special în documentația de referință privind proiectarea intrărilor de linie \cite[Capitolul \textit{Line Inputs}]{douglasself}. Într-o configurație clasică cu un singur amplificator operațional (conform topologiei din Figura \ref{fig:input_sch}), impedanța văzută de ramura ne-inversoare ($Z_{in+}$) este determinată de suma rezistențelor din divizor, în timp ce ramura inversoare prezintă o impedanță ($Z_{in-}$) mai mică, deoarece intrarea inversoare a amplificatorului operațional reprezintă un nod de masă virtuală. Matematic, pentru sistemul nostru:

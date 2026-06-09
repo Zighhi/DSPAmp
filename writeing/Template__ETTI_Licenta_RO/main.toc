@@ -22,16 +22,18 @@
 \contentsline {chapter}{\numberline {2}Proiectarea Arhitecturii Hardware }{10}{chapter.2}%
 \contentsline {section}{\numberline {2.1}Sistemul de alimentare și masa virtuală}{11}{section.2.1}%
 \contentsline {subsection}{\numberline {2.1.1}Conceptul de translație a referinței}{11}{subsection.2.1.1}%
-\contentsline {subsection}{\numberline {2.1.2}Implementarea și limitările etajului de alimentare}{11}{subsection.2.1.2}%
-\contentsline {subsubsection}{\numberline {2.1.2.1}Izolarea DC și cuplajul capacitiv}{12}{subsubsection.2.1.2.1}%
-\contentsline {subsubsection}{\numberline {2.1.2.2}Managementul dinamicii semnalului (\textit {Headroom})}{12}{subsubsection.2.1.2.2}%
+\contentsline {subsection}{\numberline {2.1.2}Implementarea hardware a masei virtuale}{11}{subsection.2.1.2}%
 \contentsline {section}{\numberline {2.2}Interfața audio de linie: Arhitectura hibridă}{12}{section.2.2}%
 \contentsline {subsection}{\numberline {2.2.1}Proiectarea etajului de intrare universal}{12}{subsection.2.2.1}%
-\contentsline {subsection}{\numberline {2.2.2}Filtrarea și condiționarea semnalului}{13}{subsection.2.2.2}%
-\contentsline {subsection}{\numberline {2.2.3}Managementul nivelului de semnal și strategia de \textit {headroom}}{13}{subsection.2.2.3}%
-\contentsline {subsection}{\numberline {2.2.4}Interfața de ieșire de linie: Topologia Impedance Balanced}{14}{subsection.2.2.4}%
-\contentsline {section}{\numberline {2.3}Integrarea Modulelor Comerciale (COTS)}{14}{section.2.3}%
-\contentsline {subsection}{\numberline {2.3.1}Procesarea Digitală a Semnalului (DSP)}{14}{subsection.2.3.1}%
+\contentsline {subsection}{\numberline {2.2.2}Gestionarea componentei continue și a dinamicii}{12}{subsection.2.2.2}%
+\contentsline {subsubsection}{\numberline {2.2.2.1}Izolarea DC și cuplajul capacitiv}{12}{subsubsection.2.2.2.1}%
+\contentsline {subsubsection}{\numberline {2.2.2.2}Managementul dinamicii semnalului (\textit {Headroom})}{13}{subsubsection.2.2.2.2}%
+\contentsline {subsection}{\numberline {2.2.3}Analiza impedanțelor și rejecția modului comun}{13}{subsection.2.2.3}%
+\contentsline {subsection}{\numberline {2.2.4}Filtrarea și condiționarea semnalului}{13}{subsection.2.2.4}%
+\contentsline {subsection}{\numberline {2.2.5}Managementul nivelului de semnal și strategia de \textit {headroom}}{14}{subsection.2.2.5}%
+\contentsline {subsection}{\numberline {2.2.6}Interfața de ieșire de linie: Topologia Impedance Balanced}{14}{subsection.2.2.6}%
+\contentsline {section}{\numberline {2.3}Integrarea Modulelor Comerciale (COTS)}{15}{section.2.3}%
+\contentsline {subsection}{\numberline {2.3.1}Procesarea Digitală a Semnalului (DSP)}{15}{subsection.2.3.1}%
 \contentsline {subsubsection}{\numberline {2.3.1.1}Condiționarea intrărilor ADC}{15}{subsubsection.2.3.1.1}%
 \contentsline {subsection}{\numberline {2.3.2}Etajele de putere în clasa D}{15}{subsection.2.3.2}%
 \contentsline {subsection}{\numberline {2.3.3}Programatorul DSP și Interfața de Control}{15}{subsection.2.3.3}%
