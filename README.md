@@ -58,7 +58,7 @@ behaviour, CMRR sensitivity to resistor tolerance), then built and measured on p
 ## Repository structure
 
 ```
-hardware/       KiCad 9 schematic, schematic PDF, BOM with Mouser part numbers, cost breakdown
+hardware/       KiCad 9 schematic, schematic PDF, BOM with Mouser part numbers
 simulations/    LTspice schematics (input stage, output stage, virtual ground) + exported results
 measurements/   REW captures: THD, SNR, CMRR, frequency response with and without DSP effects
 scripts/        Python scripts that turn the simulation and measurement data into the thesis plots
