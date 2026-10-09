@@ -1,0 +1,30 @@
+# LaTeX build output (the final PDF is tracked explicitly)
+thesis/*.aux
+thesis/*.log
+thesis/*.toc
+thesis/*.lof
+thesis/*.lot
+thesis/*.out
+thesis/*.bbl
+thesis/*.blg
+thesis/*.fls
+thesis/*.fdb_latexmk
+thesis/*.synctex.gz
+thesis/main.pdf
+
+# LTspice outputs (regenerated when a simulation runs)
+*.raw
+*.log
+*.net
+
+# KiCad
+*-backups/
+*.kicad_prl
+*.lck
+_autosave-*
+fp-info-cache
+
+# Python / OS
+__pycache__/
+.DS_Store
+Thumbs.db

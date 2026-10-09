@@ -1,0 +1,33 @@
+\chapter*{Introducere}
+\addcontentsline{toc}{chapter}{Introducere}
+
+Lucrarea de față abordează proiectarea și implementarea unui sistem complex de amplificare audio multicanal, integrând un procesor digital de semnal (DSP) programabil pentru procesarea în timp real. În contextul evoluției rapide a sistemelor multimedia, se observă o cerere crescută pentru soluții care oferă nu doar putere de ieșire, ci și o flexibilitate ridicată în modelarea răspunsului acustic.
+
+\section*{Motivația proiectului}
+\addcontentsline{toc}{section}{Motivația proiectului}
+
+Sistemele audio tradiționale, bazate exclusiv pe etaje analogice, prezintă limitări semnificative în ceea ce privește adaptabilitatea la diverse medii acustice și surse de semnal. Deși calitatea sunetului analogic rămâne un etalon, necesitatea corecțiilor complexe (egalizare parametrică, filtrare de tip crossover, aliniere temporală) impune utilizarea procesării digitale. 
+
+Motivația principală a acestui proiect constă în dezvoltarea unui echipament care să elimine bariera dintre fidelitatea analogică și versatilitatea digitală. Prin utilizarea unui procesor dedicat din familia SigmaDSP\textregistered, sistemul permite implementarea unor algoritmi de procesare ce ar fi imposibil de realizat în mod eficient în domeniul pur analogic, păstrând în același timp integritatea semnalului prin etaje de intrare și ieșire de înaltă performanță.
+
+\section*{Obiectivele lucrării}
+\addcontentsline{toc}{section}{Obiectivele lucrării}
+
+Obiectivul central este realizarea unui prototip funcțional de amplificator multicanal capabil de procesare digitală în timp real. Pentru atingerea acestui scop, s-au definit următoarele direcții de acțiune:
+\begin{itemize}
+    \item \textbf{Proiectarea interfețelor de intrare:} Dezvoltarea unor circuite capabile să gestioneze atât semnale balansate de linie (+4dBu), cât și semnale nebalansate de tip consumer (-10dBV), utilizând un sistem de preamplificare în două trepte pentru optimizarea raportului semnal-zgomot.
+    \item \textbf{Integrarea ecosistemului DSP:} Implementarea procesorului ADAU1701 (sau echivalent din seria 1401) și configurarea hardware-ului suport pentru operare la o rată de eșantionare de 48kHz.
+    \item \textbf{Dezvoltarea etajului de putere:} Integrarea unor module de amplificare în Clasa D pentru a asigura o eficiență ridicată și un design compact, adecvat pentru utilizarea într-un sistem multicanal.
+    \item \textbf{Sistemul de programare și control:} Realizarea unui programator USB-to-I2C bazat pe arhitectura Cypress, compatibil cu mediul de dezvoltare SigmaStudio, pentru a permite modificarea algoritmilor DSP fără intervenție hardware.
+    \item \textbf{Validarea experimentală:} Analiza performanțelor prin simulări în medii precum LTspice și validarea rezultatelor prin măsurători directe asupra prototipului realizat pe perfboard și, ulterior, pe circuit imprimat.
+\end{itemize}
+
+\section*{Aplicabilitatea sistemului}
+\addcontentsline{toc}{section}{Structura și aplicabilitatea sistemului}
+
+Sistemul este conceput să funcționeze ca o unitate centrală de procesare și amplificare, având aplicabilitate directă în:
+\begin{enumerate}
+    \item \textbf{Instalații audio profesionale:} Unde este necesară adaptarea semnalului la caracteristicile specifice ale incintelor acustice și ale spațiului de audiție.
+    \item \textbf{Educație și cercetare:} Servind ca platformă de testare pentru algoritmi de procesare a semnalului audio în timp real (filtre adaptive, compresie dinamică, efecte spațiale).
+    \item \textbf{Home audio High-End:} Oferind utilizatorului posibilitatea de a implementa corecții acustice digitale de finețe, inaccesibile sistemelor comerciale standard.
+\end{enumerate}

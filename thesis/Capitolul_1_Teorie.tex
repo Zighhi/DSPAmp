@@ -1,0 +1,242 @@
+\chapter{Aspecte teoretice \label{theory}}
+
+Acest capitol prezintă fundamentele teoretice necesare înțelegerii proiectului. Începem cu definirea standardelor de nivel analogic și digital. Apoi, analizăm interfețele de linie (intrare și ieșire). Urmează studiul procesului de conversie și prelucrare digitală a semnalelor. În final, sunt descrise principiile de funcționare ale amplificatoarelor în clasa D.
+\subsection{Standardele analogice: dBu și dBV}
+Cele două standarde principale pentru nivelul nominal al semnalului de linie sunt definite pe referințe de tensiune diferite \cite{douglasself}. Nivelul semnalului, exprimat în decibeli raportați la o tensiune de referință $V_0$, este calculat conform relației generale:
+\begin{equation}
+    L [dB] = 20 \log_{10} \left( \frac{V_{rms}}{V_0} \right)
+\end{equation}
+
+Această formulă definește cele două niveluri utilizate în practică:
+\begin{itemize}
+    \item \textbf{Nivelul profesional (+4 dBu):} Utilizează ca referință tensiunea $V_0 = 0.775\text{ V}$. Pentru un semnal sinusoidal, nivelul de $+4\text{ dBu}$ corespunde unei tensiuni efective de $1.228\text{ V}_{rms}$.
+    \item \textbf{Nivelul consumer (-10 dBV):} Utilizează ca referință tensiunea $V_0 = 1\text{ V}$. Pentru un semnal sinusoidal, nivelul de $-10\text{ dBV}$ corespunde unei tensiuni efective de $0.316\text{ V}_{rms}$.
+\end{itemize}
+
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{@{}llll@{}}
+        \toprule
+        \textbf{Standard} & \textbf{Nivel nominal} & \textbf{Referință ($V_0$)} & \textbf{Tensiune sinusoidală ($V_{rms}$)} \\ \midrule
+        Profesional       & $+4\text{ dBu}$       & $0.775\text{ V}$   & $1.228\text{ V}$              \\
+        Consumer          & $-10\text{ dBV}$      & $1.000\text{ V}$   & $0.316\text{ V}$              \\ \bottomrule
+    \end{tabular}
+    \vspace{2mm}
+    \caption{Comparație între nivelurile nominale de linie}
+    \label{tab:audio_levels}
+\end{table}
+
+\subsection{Standardul digital: dBFS}
+Odată ce semnalul ajunge în domeniul numeric, unitățile de măsură raportate la tensiuni absolute își pierd relevanța, fiind înlocuite de \textbf{dBFS} (Decibels relative to Full Scale), conform standardului AES17 \cite{aes17_2020}. Această scară raportează amplitudinea semnalului digital la valoarea maximă ce poate fi reprezentată de convertorul analog-digital (ADC) fără a produce saturație.
+
+Valoarea de $0\text{ dBFS}$ reprezintă nivelul maxim (Full Scale), toate celelalte valori fiind exprimate prin numere negative. Într-un sistem de prelucrare numerică, menținerea unei rezerve dinamice, cunoscută sub numele de \textbf{headroom}, este esențială sub pragul de $0\text{ dBFS}$. Orice încercare de a reprezenta un semnal peste acest prag conduce la fenomenul de \textbf{clipping} digital, care cauzează distorsiuni armonice.
+
+\section{Interfețe analogice de linie echilibrate și neechilibrate}
+Proiectarea interfețelor analogice de linie trebuie să asigure integritatea semnalului și o rejecție optimă a zgomotului, conform principiilor descrise de Douglas Self în \cite{douglasself}. Un aspect fundamental în acest proces este gestionarea corectă a impedanțelor de intrare și de ieșire.
+
+\subsection{Adaptarea în tensiune}
+Spre deosebire de sistemele de radiofrecvență unde se urmărește transferul maxim de putere prin egalarea impedanțelor, ingineria audio se bazează pe principiul \textit{adaptării în tensiune}. Acest concept presupune ca etajul de ieșire al unei surse să prezinte o impedanță cât mai mică ($Z_{out} \to 0$), în timp ce etajul de intrare să prezinte o impedanță cât mai mare ($Z_{in} \to \infty$).
+
+\begin{itemize}
+    \item \textbf{Impedanța de intrare ($Z_{in}$):} Aceasta trebuie să fie suficient de ridicată, valorile uzuale fiind situate peste $10\text{ k}\Omega$. O impedanță de intrare prea mică exercită o sarcină excesivă asupra sursei, forțând etajul de ieșire al acesteia să livreze un curent mai mare decât poate genera, ceea ce poate duce la distorsiuni. De asemenea se produce și atenuarea frecvențelor joase prin formarea unui filtru trece-sus.
+    \item \textbf{Impedanța de ieșire ($Z_{out}$):} Valoarea acesteia trebuie menținută la un nivel scăzut, de regulă în jur de  $100\text{ }\Omega$. O impedanță de ieșire ridicată limitează capacitatea sistemului de a conduce sarcini capacitive, precum cablurile lungi de interconectare. Rezultatul este formarea unui filtru trece-jos nedorit care atenuează frecvențele înalte.
+\end{itemize}
+
+Menținerea unui raport de minim $1:10$ între impedanța sursei și cea a sarcinii este considerată o regulă fundamentală pentru a garanta o eroare de transmisie minimă și o fidelitate maximă a semnalului. Acest mecanism de transfer este modelat în Figura \ref{fig:impedance_transfer}, unde se observă formarea unui divizor rezistiv între sursă și sarcină.
+
+\begin{figure}[H]
+    \centering
+    \begin{circuitikz}[scale=1.2, transform shape]
+        % Sursa (Vs) - Cerc curat cu fire ce ating perfect
+        \draw (0,0) node[ground] {} -- (0,0.6);
+        \draw (0,1) circle (0.4);
+        \node at (0, 1.15) {\small $+$};
+        \node at (0, 0.85) {\small $-$};
+        \node[left=0.5cm] at (0,1) {$V_{out}$};
+        \draw (0,1.4) -- (0,2);
+        
+        % Restul circuitului
+        \draw (0,2) to[R, l=$Z_{out}$] (3,2)
+        to[R, l=$Z_{in}$] (3,0)
+        to[short] (0,0);
+        
+        % Tensiunea la sarcina (Vl)
+        \draw[->, >=stealth, thick] (4,0) -- (4,2) node[midway, right] {$V_{in}$};
+        
+        % Texte descriptive gri cu sub-etichete
+        \node[color=gray, align=center] at (-1, 3.0) {\textbf{SURSĂ}\\[-1ex]\tiny (Ieșire)};
+        \node[color=gray, align=center] at (4, 3.0) {\textbf{SARCINĂ}\\[-1ex]\tiny (Intrare)};
+    \end{circuitikz}
+    \caption{Modelul echivalent al transferului de tensiune între două etaje}
+    \label{fig:impedance_transfer}
+\end{figure}
+
+Tensiunea de la intrare ($V_{in}$) este determinată de relația divizorului de tensiune:
+\begin{equation}
+    V_{in} = V_{out} \cdot \frac{Z_{in}}{Z_{out} + Z_{in}}
+\end{equation}
+
+\subsection{Interfete analogice de linie}
+Există două tipuri fundamentale de interfețe audio analogice, fiecare cu cerințe specifice de proiectare.
+
+\subsubsection{Interfața neechilibrată}
+Un etaj de intrare neechilibrat trebuie să asigure o impedanță de intrare constantă și să includă elemente de protecție împotriva interferențelor externe. 
+
+Schema tipică a unui astfel de etaj, este prezentată în Figura \ref{fig:unbalanced_input_theory}.
+
+\begin{figure}[H]
+    \centering
+    \begin{circuitikz}[scale=1.1, transform shape]
+        % Intrarea
+        \draw (0,2) node[left] {IN} to[short, o-] (0.5,2)
+        % Filtru RF
+        to[R, l=$R_{rf}$] (2,2) 
+        to[C, l=$C_{rf}$] (2,0) node[ground] {};
+        
+        % Cuplaj DC
+        \draw (2,2) to[C, l=$C_{dc}$, -*] (4,2) coordinate(node1);
+        
+        % Impedanta de intrare
+        \draw (node1) to[R, l=$R_{in}$] (4,0) node[ground] {};
+        
+        % Buffer Op-Amp
+        \draw (4,2) -- (5,2) node[op amp, anchor=+] (opamp) {};
+        \draw (opamp.-) -- ++(0,1) coordinate(fb) -- (fb -| opamp.out) -- (opamp.out);
+        \draw (opamp.out) to[short, -o] ++(1,0) node[right] {OUT};
+    \end{circuitikz}
+    \caption{Configurația teoretică a unui etaj de intrare neechilibrat}
+    \label{fig:unbalanced_input_theory}
+\end{figure}
+
+Componentele folosite au următoarele roluri critice în menținerea calității semnalului:
+\begin{itemize}
+    \item \textbf{Filtrul RF ($R_{rf}, C_{rf}$):} Formează un filtru trece-jos cu frecvența de tăiere situată mult peste banda audio (uzual în domeniul sutelor de kHz), având rolul de a bloca pătrunderea semnalelor de radiofrecvență care ar putea fi demodulate de etajele active ulterioare.
+    \item \textbf{Condensatorul de cuplaj ($C_{dc}$):} Blochează orice componentă de curent continuu provenită de la sursă, protejând etajele de amplificare de offset-uri de tensiune nedorite.
+    \item \textbf{Rezistența de intrare ($R_{in}$):} Stabilește impedanța de intrare a sistemului (tipic $22\text{ k}\Omega - 47\text{ k}\Omega$).
+    \item \textbf{Amplificatorul operațional (Buffer):} Configurația de repetor de tensiune (câștig unitar) asigură o impedanță de intrare ridicată și o impedanță de ieșire scăzută. Acest etaj acționează ca un izolator, prevenind încărcarea sursei și asigurând un transfer de tensiune cât mai fidel către etajele următoare.
+\end{itemize}
+
+\subsubsection{Interfața echilibrată}
+Transmisia echilibrată (balansată) utilizează doi conductori activi, denumiți „Cald” (semnal în fază) și „Rece” (semnal în antifază). Un aspect important este faptul că rejecția zgomotului de mod comun depinde de egalitatea impedanțelor fiecărui conductor față de masă \cite{Whitlock1995balanced}. Orice interferență electromagnetică indusă pe parcursul cablului va afecta în mod egal ambii conductori doar dacă impedanțele acestora sunt perfect echilibrate.
+
+Acest mecanism de rejecție este ilustrat vizual în Figura \ref{fig:cmrr_signals}. Prin scăderea matematică a celor două semnale cu intermediul unui amplificator diferențial, componenta utilă se însumează constructiv, în timp ce zgomotul de mod comun este anulat.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{figuri/cmrr_signals.pdf}
+    \caption{Reprezentarea anulării zgomotului de mod comun prin transmisie echilibrată}
+    \label{fig:cmrr_signals}
+\end{figure}
+
+Realizarea acestei operații în domeniul analogic se bazează pe un amplificator diferențial, a cărui schemă de principiu este redată în Figura \ref{fig:diff_amp_theory}.
+
+\begin{figure}[H]
+    \centering
+    \begin{circuitikz}[scale=1.2, transform shape]
+        \draw (4,2) node[op amp] (opamp) {};
+        \draw (0,2.5) node[left] {IN- (Rece)} to[R, l=$R_1$, o-] (opamp.-);
+        \draw (0,1.5) node[left] {IN+ (Cald)} to[R, l=$R_3$, o-] (opamp.+);
+        \draw (opamp.-) -- ++(0,1) coordinate(fb1) to[R, l=$R_2$] ++(2.4,0) coordinate(fb2) -- (opamp.out);
+        \draw (opamp.+) to[R, l=$R_4$] ++(0,-1.5) node[ground] {};
+        \draw (opamp.out) to[short, -o] ++(1,0) node[right] {$V_{out}$};
+    \end{circuitikz}
+    \caption{Schema teoretică a unui amplificator diferențial}
+    \label{fig:diff_amp_theory}
+\end{figure}
+
+Tensiunea la ieșirea amplificatorului diferențial ($V_{out}$) rezultă din legea superpoziției și se calculează cu ecuația:
+\begin{equation}
+    V_{out} = V_{Cald} \cdot \left( \frac{R_4}{R_3 + R_4} \right) \cdot \left( 1 + \frac{R_2}{R_1} \right) - V_{Rece} \cdot \left( \frac{R_2}{R_1} \right)
+\end{equation}
+
+Pentru a asigura o anulare perfectă a semnalului de mod comun, este strict necesară respectarea următoarei condiții:
+\begin{equation}
+    \frac{R_1}{R_2} = \frac{R_3}{R_4}
+\end{equation}
+Dacă această condiție este îndeplinită, ecuația se simplifică, iar sistemul amplifică exclusiv diferența de potențial dintre cele două intrări:
+\begin{equation}
+    V_{out} = \frac{R_2}{R_1} \cdot (V_{Cald} - V_{Rece})
+\end{equation}
+
+\subsection{Calculul și măsurarea raportului de rejecție (CMRR)}
+Capacitatea reală a circuitului de a respinge interferențele este cuantificată prin parametrul \textbf{CMRR} (Common Mode Rejection Ratio). Conform standardului IEC 60268-3 \cite{iec60268_3}, acesta se definește ca raportul logaritmic între câștigul diferențial ($A_d$) și câștigul de mod comun ($A_{cm}$):
+\begin{equation}
+    CMRR [dB] = 20 \log_{10} \left| \frac{A_d}{A_{cm}} \right|
+\end{equation}
+
+Unde câștigul de mod comun, $A_{cm}$, reprezintă raportul dintre variația tensiunii de ieșire și variația tensiunii aplicate simultan pe ambele intrări. Într-un sistem ideal, $A_{cm}$ ar trebui să fie egal cu zero, conducând la un CMRR infinit.
+
+Metodologia standard de măsurare implică parcurgerea unor pași fundamentali, bazați pe recomandările IEC 60268-3 \cite{iec60268_3} și bunele practici de laborator documentate de Douglas Self \cite{douglasself}:
+\begin{enumerate}
+    \item \textbf{Determinarea câștigului diferențial ($A_d$):} Se aplică un semnal sinusoidal de test (tipic $1\text{ kHz}$) între bornele „Cald” și „Rece”. Tensiunea rezultată la ieșire ($V_{out,d}$) permite calcularea factorului de transfer diferențial: $A_d = V_{out,d} / V_{in,d}$.
+    \item \textbf{Determinarea câștigului de mod comun ($A_{cm}$):} Cele două borne de intrare se conectează într-un punct comun (în scurtcircuit), asupra căruia se aplică un semnal de test de amplitudine ridicată raportat la masă. Tensiunea reziduală măsurată la ieșire ($V_{out,cm}$) permite determinarea câștigului de mod comun: $A_{cm} = V_{out,cm} / V_{in,cm}$.
+\end{enumerate}
+
+Performanța acestui parametru este dictată direct de toleranța de fabricație a rezistențelor utilizate, fenomen modelat în Figura \ref{fig:cmrr_tolerance}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figuri/cmrr_tolerance.pdf}
+    \caption{Degradarea teoretică a parametrului CMRR în funcție de toleranța componentelor pasive}
+    \label{fig:cmrr_tolerance}
+\end{figure}
+
+Pe baza analizei din Figura \ref{fig:cmrr_tolerance}, se observă că utilizarea unor rezistențe cu toleranță standard de $1\%$ plafonează valoarea CMRR la aproximativ $40\text{ dB}$, ceea ce este adesea insuficient pentru mediile electromagnetice zgomotoase. Obținerea unui nivel profesional de rejecție de minim $60\text{ dB}$ impune utilizarea exclusivă a componentelor pasive de precizie ridicată, cu o toleranță de maxim $0.1\%$ \cite{douglasself}.
+
+\section{Procesarea digitală a semnalelor}
+După condiționarea analogică, semnalul este digitizat prin procese de eșantionare și cuantizare, bazate pe teorema Nyquist-Shannon \cite{oppenheim2010discrete}.
+
+\subsection{Eșantionarea și cuantizarea}
+Conversia semnalului analogic în domeniu digital presupune două etape: eșantionarea (discretizarea în timp) și cuantizarea (discretizarea în amplitudine).
+
+Conform teoremei Nyquist-Shannon \cite{oppenheim2010discrete}, pentru a evita fenomenul de \textbf{aliere spectrală} (aliasing) și a permite reconstrucția fidelă a semnalului, frecvența de eșantionare $f_s$ trebuie să fie cel puțin dublul frecvenței maxime din spectrul util ($f_s > 2 f_{max}$). În sistemele audio profesionale, se utilizează $f_s = 48\text{ kHz}$ sau chiar $f_s = 96\text{ kHz}$.
+
+Cuantizarea presupune aproximarea amplitudinii fiecărui eșantion la cel mai apropiat nivel dintr-o scară definită pe $N$ biți, proces ilustrat în Figura \ref{fig:sampling}. Această aproximare introduce un \textbf{zgomot de cuantizare}, raportul semnal-zgomot ($SNR$) teoretic fiind determinat de numărul de biți de rezoluție conform relației fundamentale \cite{zolzer2011dafx}:
+
+\begin{equation}
+    SNR [dB] \approx 6.02 \cdot N + 1.76
+    \label{eq:snr_quantization}
+\end{equation}
+
+În cazul sistemelor audio care utilizează o rezoluție de $N=24$ biți, raportul semnal-zgomot teoretic atinge valoarea de $146.24\text{ dB}$. Această performanță asigură o rezervă dinamică vastă, situând pragul zgomotului de cuantizare mult sub nivelul zgomotului componentelor analogice, eliminându-l astfel ca factor în lanțul de procesare.
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            axis lines = middle,
+            xlabel = {$t$},
+            ylabel = {$u(t)$},
+            height=7cm, width=12cm,
+            xmin=0, xmax=7,
+            ymin=-1.2, ymax=1.2,
+            xtick={0,1,2,3,4,5,6},
+            xticklabels={0,$T_s$,$2T_s$,$3T_s$,$4T_s$,$5T_s$,$6T_s$},
+            ytick={-1,-0.75,-0.5,-0.25,0,0.25,0.5,0.75,1},
+            yticklabels={$-1$,,,,,,,,$1$}, 
+            grid=both,
+            grid style={dotted, gray!50}
+        ]
+            \foreach \y in {-1,-0.75,-0.5,-0.25,0,0.25,0.5,0.75,1} {
+                \addplot [domain=0:6.5, gray!20, dotted, thin] {\y};
+            }
+            \addplot [domain=0:6.5, samples=100, blue, opacity=0.4, thick] {sin(deg(x))};
+            \addplot [ycomb, red, thick, samples=14, domain=0:6.28] {round(sin(deg(x))*4)/4};
+            \addplot [only marks, mark=*, red, samples=14, domain=0:6.28] {round(sin(deg(x))*4)/4};
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Procesul de eșantionare și cuantizare}
+    \label{fig:sampling}
+\end{figure}
+
+\subsection{Convertoare Delta-Sigma (\texorpdfstring{$\Delta\Sigma$}{Delta-Sigma})}
+Arhitecturile \textbf{Delta-Sigma} bazate pe supraeșantionare sunt utilizate pentru conversia de înaltă rezoluție \cite{zolzer2011dafx}. Prin operarea unui cuantizor de 1 bit la o frecvență mult peste pragul Nyquist, zgomotul de cuantizare este distribuit spectral, iar feedback-ul modulatorului îl „împinge” către frecvențele ultrasonice.
+
+La ADC, acest proces este urmat de un filtru de decimare care elimină zgomotul de înaltă frecvență și livrează datele la rezoluția țintă (ex. 24 biți). Simetric, la DAC, semnalul este interpolat și trecut printr-un modulator digital, valoarea medie fiind extrasă de un filtru analogic de reconstrucție.
+
+\section{Amplificarea în Clasa D}
+Amplificatoarele în clasa D, cunoscute și sub denumirea de amplificatoare cu comutație, funcționează pe baza principiului modulării în lățime a impulsurilor (PWM). Spre deosebire de clasele de amplificare liniare, în care tranzistoarele de putere operează în regiunea activă, în clasa D acestea funcționează exclusiv ca întrerupătoare, fiind fie în stare de conducție (saturație), fie în stare de blocare \cite{self2006audio}.
+
+Procesul de amplificare presupune transformarea semnalului audio analogic într-un semnal PWM. Această conversie se realizează prin compararea semnalului de intrare cu o undă purtătoare (triunghiulară sau dinte de fierăstrău) a cărei frecvență este mult superioară limitei superioare a benzii audio. Rezultatul este un flux de impulsuri a căror durată este proporțională cu amplitudinea instantanee a semnalului audio. Acest semnal PWM comandă etajul de putere, care comută tensiunea de alimentare pe sarcină prin intermediul unei configurații de tip punte H \cite{douglasself}.
+
+Recuperarea informației audio din semnalul de putere modulat se realizează cu ajutorul unui filtru trece-jos pasiv de tip LC, plasat înainte de ieșire. Filtrul acționează ca un integrator, eliminând componentele de înaltă frecvență ale purtătoarei și lăsând să treacă doar valoarea medie a impulsurilor, care corespunde semnalului audio original. Această metodă de operare asigură transferul de putere către sarcină cu pierderi minime pe elementele active, deoarece tranzistoarele disipă putere semnificativă doar în timpul scurtelor tranziții între stările de conducție și blocare \cite{self2006audio}.
